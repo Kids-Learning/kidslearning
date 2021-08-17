@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Teacher Signup</title>
+</head>
+<body>
+<form action="/teachersigup_post" method="post" enctype="multipart/form-data">
+	<table width="200" border="1" 
+		   align="center">
+  <tbody>
+	  <h1 align="center">Teacher Signup</h1>
+    <tr>
+      <td>Name</td>
+      <td><input type="text" name="name" required/></td>
+    </tr>
+    <tr>
+      <td>Gender</td>
+      <td><input type="radio" name="gender" value="male" checked/> Male
+		<input type="radio" name="gender" value="female" /> Female</td>
+    </tr>
+    <tr>
+      <td>Phone</td>
+      <td><input type="text" name="phone" required/></td>
+    </tr>
+    <tr>
+      <td>Date of Birth</td>
+      <td><input type="date" name="dateofbirth" required /></td>
+    </tr>
+    <tr>
+      <td>Photo</td>
+      <td><input type="file" name="photo" required/></td>
+    </tr>
+    <tr>
+      <td>Place</td>
+      <td><input type="text" name="place" required /></td>
+    </tr>
+    <tr>
+      <td>Email</td>
+      <td><input type="email" name="email" required /></td>
+    </tr>
+    <tr>
+      <td>Qualification</td>
+      <td><input type="text" name="qualification" required/></td>
+    </tr>
+   <tr>
+      <td>Password</td>
+      <td><input type="password" name="password" required /></td>
+    </tr>
+    <tr>
+      <td>Confirm Password</td>
+      <td><input type="password" name="confirmpassword" required </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center" ><input type="submit" value="Save"/></td>
+      
+    </tr>
+  </tbody>
+</table>
+
+</form>
+
+</body>
+</html>

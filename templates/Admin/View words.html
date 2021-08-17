@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>View Words</title>
+</head>
+<body>
+	<h2 align="center">View Words</h2>
+	<table width="411" height="120" border="3" align="center">
+  <tbody>
+
+    <tr align="center">
+      <td height="42">Sl No</td>
+      <td>Words</td>
+      <td>&nbsp;</td>
+    </tr>
+    {% for i in data %}
+    <tr align="center">
+      <td>{{ loop.index }}</td>
+      <td>{{ i["word"] }}</td>
+      <td align="center"><a href="/editwords/{{ i["w_id"] }}">Edit</a>
+		<a href="/deletewords/{{ i["w_id"] }}">Delete</a></td>
+        {% endfor %}
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

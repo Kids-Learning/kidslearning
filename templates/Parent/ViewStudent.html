@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>View Student</title>
+</head>
+
+<body>
+   <h2 align="center">View Student</h2>
+<table align="center" width="751" height="132" border="1">
+  <tr align="center">
+    <td width="78" height="36">Sl No</td>
+    <td width="67">Name</td>
+    <td width="71">Phone</td>
+    <td width="59">Age</td>
+    <td width="132">Photo</td>
+    <td width="51">Gender</td>
+    <td width="89">Standered</td>
+    <td width="82">&nbsp;</td>
+  </tr>
+    {% for i in data %}
+  <tr align="center">
+    <td>{{ loop.index }}</td>
+    <td>{{ i['name'] }}</td>
+    <td>{{ i['phone'] }}</td>
+    <td>{{ i['age'] }}</td>
+    <td><img src="{{ i['photo'] }}" width="132" height="96" /></td></td>
+    <td>{{ i['gender'] }}</td>
+    <td>{{ i['standered'] }}</td>
+    <td width="22"><a href="/editstudent/{{ i["s_id"] }}">Edit</a>
+    <a href="/deletestudent/{{ i["s_id"] }}">Delete</a></td>
+  </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

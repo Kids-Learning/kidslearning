@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Add Image Puzzle</title>
+</head>
+<body>
+	<h2 align="center">Add Image Puzzle</h2>
+	<form method="post" action="/addimagepuzzle_post" enctype="multipart/form-data">
+	<table width="442" height="185" border="3" align="center">
+  <tbody>
+    <tr>
+      <td>Puzzle</td>
+      <td><input type="text" name="puzzle" required/> </td>
+    </tr>
+    <tr>
+      <td>Photo</td>
+      <td><input type="file" name="photo"/></td>
+    </tr>
+    <tr>
+      <td>Time to Complete</td>
+      <td> <input type="number" name="time"/>minutes</td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center"><input type="submit" value="Save"/></td>
+    </tr>
+  </tbody>
+</table>
+
+	</form>
+</body>
+</html>

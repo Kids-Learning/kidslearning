@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>View Objects</title>
+</head>
+<body>
+	<h3 align="center">View Objects</h3>
+	<table width="499" height="255" border="3" align="center">
+  <tbody>
+    <tr>
+      <td width="64" height="42" align="center">Sl No</td>
+      <td align="center" width="98">Name</td>
+      <td align="center" width="80">Photo</td>
+      <td align="center" width="139">&nbsp;</td>
+    </tr>
+     {% for i in data %}
+    <tr>
+      <td  align="center" height="133">{{ loop.index }}</td>
+      <td align="center">{{ i['name'] }}</td>
+      <td align="center">  <img src="{{ i["photo"]}}" width="132" height="96" /> </td>
+        <td colspan="2" s align="center"><a href="/editobject/{{ i["ob_id"] }}">Edit</a>
+
+		<a  href="/deleteobject/{{ i["ob_id"] }}">Delete</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+</body>
+</html>

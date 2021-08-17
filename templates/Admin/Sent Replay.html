@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Sent replay</title>
+</head>
+
+<body>
+	<h3 align="center">Sent Replay</h3>
+		<form action="/sentreply_post" method="post">
+            <table width="200" border="1"
+					 align="center">
+  <tbody>
+    <tr><input type="hidden" name="c_id" value="{{ data['c_id'] }}"/>
+      <td>Complaint</td>
+      <td>{{ data['complaint'] }}</td>
+    </tr>
+    <tr>
+      <td>Reply</td>
+      <td><input type="text" name="reply"/></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center"><input type="submit" value="Sent"/></td>
+    </tr>
+  </tbody>
+</table>
+
+		</form>
+</body>
+</html>

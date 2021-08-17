@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>View Complaint and Sent replay</title>
+</head>
+<body>
+	<h2 align="center">View Complaints</h2>
+    <table align="center">
+  <tr>
+      <form action="/viewcomplaint_post" method="post"  >
+      <td colspan="2">Date From</td>
+      <td colspan="2"><input type="date" name="datefrom"/></td>
+		<td colspan="2">Date to</td>
+		<td><input type="date" name="dateto"/>
+		<input type="submit" value="Search"/></td>
+    </tr>
+</table><br>
+
+	<table width="483" height="135" border="1" align="center">
+  <tbody>
+  
+    <tr align="center">
+      <td width="67">Sl No</td>
+      <td width="76">From</td>
+      <td width="41">Date</td>
+      <td width="132">Photo</td>
+      <td width="83">Complaint</td>
+      <td width="44">Replay</td>
+    </tr>
+     {% for i in data %}
+    <tr align="center">
+      <td>{{ loop.index }}</td>
+      <td>{{ i["name"] }}</td>
+      <td>{{ i["date"] }}</td>
+      <td> <img src="{{ i["photo"]}}" width="132" height="96" /></td>
+      <td>{{ i["complaint"] }}</td>
+        {% if i["reply"]=="pending" %}
+      <td><a href="/sentreplay/{{ i['c_id'] }}">Replay</a></td>
+    {% else %}
+    <td>{{ i["reply"] }}</td>
+    {% endif %}
+    </tr>
+  {% endfor %}
+  </tbody>
+</table><br>
+
+		
+</form>
+</body>
+</html>
