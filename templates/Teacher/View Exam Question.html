@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Exam Questions View</title>
+</head>
+<body>
+	<h3 align="center">Exam Questions View</h3><p align="right">
+  <a href="/addexam_question/{{ session["ex_id"]}}">Add More Questions</a></p>
+	<table width="1137" height="147" border="1" align="center">
+  <tbody>
+    <tr bgcolor="#999999" align="center">
+      <td  width="72" height="57" align="center">Sl No</td>
+      <td width="71">Question</td>
+      <td width="50">Option1</td>
+      <td width="59">Option2</td>
+      <td width="58">Option3</td>
+      <td width="59">Option4</td>
+      <td width="59">Correct Answer</td>
+      <td width="49"></td>
+    </tr>
+    {% for i in data %}
+    <tr align="center">
+      <td height="68">{{ loop.index }}</td>
+      <td>{{ i["question"] }}</td>
+      <td>{{ i["optiona"] }}</td>
+      <td>{{ i["optionb"] }}</td>
+      <td>{{ i["optionc"] }}</td>
+      <td>{{ i["optiond"] }}</td>
+      <td>{{ i["answer"] }}</td>
+      <td><a href="/editexamquestion/{{ i['exq_id'] }}/{{ i["ex_id"] }}">Edit</a>
+		<a href="/delectexamquestion/{{ i['exq_id'] }}/{{i['ex_id']}}">Delete</a></td>
+    </tr>
+   {% endfor %}
+  </tbody>
+</table>
+
+</body>
+</html>

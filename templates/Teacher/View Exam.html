@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>View Exam</title>
+</head>
+<body>
+	<h1 align="center">View Exam</h1>
+<table width="634" height="178" border="1" 
+	   align="center">
+  <tbody>
+    <tr>
+      <th width="123">Sl No</th>
+      <th width="135">Subject</th>
+      <th width="82">Date</th>
+      <th width="82">Time</th>
+      <th colspan="3">&nbsp;</th>
+      
+      
+    </tr>
+    {% for i in data %}
+    <tr>
+      <td align="center">{{ loop.index }}</td>
+      <td align="center">{{ i["subject"] }}</td>
+        <td width="82" align="center">{{ i["date"] }}</td>
+        <td width="82" align="center">{{ i["time"] }}</td>
+        
+      <td width="178" align="center"><a href="/deleteexam/{{ i["ex_id"] }}">Delete</a><br>
+        <a href="/editexam/{{ i["ex_id"] }}">Edit</a> <br>
+        <a href="/addexam_question/{{ i["ex_id"] }}">Add Exam Questions</a><br>
+        <a href="/viewexam_questions/{{ i["ex_id"] }}">View Exam Questions</a></td>
+    {% endfor %}
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

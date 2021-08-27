@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Edit Exam Questions</title>
+</head>
+<body>
+	<h1 align="center">Edit Exam Question</h1>
+	<form method="post" action="/editexamquestion_post" >
+		<table width="326" height="296" border="1" align="center">
+  <tbody>
+    <tr align="center"><input type="hidden" name="exq_id" value="{{ data['exq_id'] }}"/>
+      <td align="center" width="124" height="62" colspan="">Question</td>
+      <td width="186" rowspan="2"><input type="textarea" rows="3" cols="3" name="question" value="{{ data['question'] }}" required /></td>
+    </tr>
+    <tr>
+      
+      
+    </tr>
+    <tr align="center">
+      <td >Option 1</td>
+      <td><input type="text" name="option1" value="{{ data['optiona'] }}"  required /></td>
+    </tr>
+    <tr align="center">
+      <td>Option 2</td>
+      <td><input type="text" name="option2" value="{{ data['optionb'] }}" required/></td>
+    </tr>
+    <tr align="center">
+      <td>Option 3</td>
+      <td><input type="text" name="option3"  value="{{ data['optionc'] }}" required/></td>
+    </tr>
+    <tr align="center">
+      <td>Option 4</td>
+      <td><input type="text" name="option4"  value="{{ data['optiond'] }}" required/></td>
+    </tr>
+    <tr align="center">
+      <td><b>Correct Answer</b></td>
+      <td><input type="text" name="answer" value="{{ data['answer'] }}" required/></td>
+    </tr>
+	  <tr>
+      <td colspan="2" align="center"><input type="submit" value="Save"/></td>
+    </tr>
+  </tbody>
+</table>
+
+	</form>
+</body>
+</html>

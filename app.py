@@ -1,3 +1,4 @@
+from re import A
 from flask import Flask, render_template, request
 from flask.globals import session
 from DBConnection import Db
@@ -222,6 +223,7 @@ def view_questions():
     qry = "select * from question"
     res = db.select(qry)
     return render_template("Admin/Question View.html", data=res)
+
 
 
 @app.route('/deletequestion/<id>')
@@ -499,7 +501,10 @@ def addstudent_post():
     path = "/static/student/" + photo.filename
     gender=request.form['gender']
     standered=request.form['standered']
-    qry="INSERT INTO student (`name`,`phone`,`age`,`photo`,`gender`,`standered`,p_id)VALUES ('"+name+"','"+phone+"','"+age+"','"+path+"','"+gender+"','"+ standered+"','"+str(session["log_id"])+"')"
+    email=request.form['email']
+    qry1="INSERT INTO login (username,password,type)VALUES('"+email+"','"+phone+"','student') "
+    lid=db.insert(qry1)
+    qry="INSERT INTO student (`name`,`phone`,`age`,`photo`,`gender`,`standered`,p_id,log_id)VALUES ('"+name+"','"+phone+"','"+age+"','"+path+"','"+gender+"','"+ standered+"','"+str(session["log_id"])+"','"+str(lid)+"')"
     res=db.insert(qry)
     return '''<script>alert ("Student Added Successfully ");window.location='/addstudent'</script>'''
 
@@ -549,6 +554,22 @@ def edit_student_post():
     return '''<script>alert ("Student Edited Successfully ");window.location='/viewstudent'</script>'''
 
 
+@app.route('/viewteachers_parent')
+def viewteachers():
+    db= Db()
+    qry="SELECT *FROM teachers"
+    res=db.select(qry)
+    return render_template("Parent/View Teachers2.html",data=res)
+
+@app.route('/viewperfomance/<id>')
+def viewperfomance(id):
+    db=Db()
+    qry="SELECT COUNT(`pr_id`)FROM `puzzle_result` WHERE `s_id`='"+id+"'"
+    total_pr=db.selectOne(qry)
+    qry1="SELECT COUNT(`pr_id`)FROM `puzzle_result` WHERE `s_id`='"+id+"' AND result='pass'"
+    mark_pr=db.selectOne(qry1)
+    return render_template("Parent/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr)
+
 # ---------------------------------------TEACHER------------------------------------
 @app.route('/viewprofile')
 def viewprofile():
@@ -557,6 +578,165 @@ def viewprofile():
     res=db.selectOne(qry)
     return render_template("Teacher/ViewProfile.html", i=res)
 
+@app.route('/studymaterials')
+def studymaterials():
+    return render_template("Teacher/studymaterial.html")
+
+@app.route('/studymaterials_post', methods=['post'])
+def studymaterials_post():
+    db = Db()
+    subject= request.form['subject']
+    file = request.files["file"]
+    file.save(static_path + "studymaterial\\" + file.filename)
+    path = "/static/studymaterial/" + file.filename
+    qry="INSERT INTO study_meterials(subject,file,t_id,date)VALUES('"+subject+"','"+path+"','"+str(session["log_id"])+"',curdate())"
+    res=db.insert(qry)
+    return '''<script>alert ("Study Material Added Successfully ");window.location='/studymaterials'</script>'''
+
+@app.route('/viewstudymeterial')
+def viewstudymeterial():
+    db= Db()
+    qry="SELECT * FROM study_meterials WHERE t_id='"+str(session["log_id"])+"'"
+    res=db.select(qry)
+    return render_template("Teacher/View Studymaterials.html", data=res)
+
+@app.route('/deletestudymeterial/<id>')
+def deletestudymeterial(id):
+    db=Db()
+    qry="DELETE FROM study_meterials WHERE m_id='"+id+"'"
+    res=db.delete(qry)
+    return '''<script>alert ("Study Material Deleted Successfully ");window.location='/viewstudymeterial'</script>'''
+
+@app.route('/editstudymeterial/<id>')
+def editstudymeterial(id):
+    db=Db()
+    qry="SELECT * FROM study_meterials WHERE m_id='"+id+"'"
+    res=db.selectOne(qry)   
+    return render_template("Teacher/Edit studymeterial.html", data=res)
+
+@app.route('/editstudymeterial_post',methods=['post'])
+def editstudymeterial_post():
+    db=Db()
+    m_id=request.form['m_id']   
+    subject= request.form['subject']
+    qry="UPDATE study_meterials SET subject='"+subject+"' WHERE m_id='"+m_id+"'"
+    res=db.update(qry)
+    return '''<script>alert ("Study Material Name Edited Successfully ");window.location='/viewstudymeterial'</script>'''
+
+@app.route('/addexam')
+def adddexam():
+    return render_template("Teacher/Add Exam.html")
+
+
+@app.route('/addexam_post', methods=['post'])
+def adddexam_post():
+    db = Db()
+    subject= request.form['subject']
+    date = request.form['date']
+    time = request.form['time']
+    qry="INSERT INTO exam(subject,date,time,t_id)VALUES('"+subject+"','"+date+"','"+time+"','"+str(session["log_id"])+"')"
+    res=db.insert(qry)
+    return '''<script>alert ("Exam Added Successfully ");window.location='/addexam'</script>'''
+
+@app.route('/viewexam')
+def viewexam():
+    db= Db()
+    qry="SELECT * FROM exam WHERE t_id='"+str(session["log_id"])+"'"
+    res=db.select(qry)
+    return render_template("Teacher/View Exam.html", data=res)
+
+@app.route('/deleteexam/<id>')
+def deleteexam(id):
+    db=Db()
+    qry="DELETE FROM exam WHERE ex_id='"+id+"'"
+    res=db.delete(qry)
+    return '''<script>alert ("Exam Deleted Successfully ");window.location='/viewexam'</script>'''
+
+@app.route('/editexam/<id>')
+def editexam(id):
+    db= Db()
+    qry="SELECT * FROM exam WHERE ex_id ='"+id+"'"
+    res=db.selectOne(qry)
+    return render_template('Teacher/Edit Exam.html',data=res)
+
+@app.route('/editexam_post',methods=['post'])
+def editexam_post():
+    db= Db()
+    ex_id=request.form['ex_id']
+    subject= request.form['subject']
+    date=request.form['date']
+    time=request.form['time']
+    qry="UPDATE exam SET subject='"+subject+"',date='"+date+"',time='"+time+"' WHERE ex_id='"+ex_id+"'"
+    res = db.update(qry)
+    return '''<script>alert ("Exam Edited Successfully ");window.location='/viewexam'</script>'''
+
+
+@app.route('/addexam_question/<id>')
+def addquestion_teacher(id):
+    session["ex_id"]=id
+    return render_template('Teacher/Add Exam Questions.html')
+
+@app.route('/addexamquestion_post', methods=['post'])
+def addexamquestion_post():
+    db = Db()
+    question = request.form['question']
+    option1 = request.form['option1']
+    option2 = request.form['option2']
+    option3= request.form['option3']
+    option4= request.form['option4']
+    answer= request.form['answer']
+    qry="INSERT INTO exam_question(`question`,`optiona`,`optionb`,`optionc`,`optiond`,`answer`,`ex_id`)VALUES('"+question+"','"+option1+"','"+option2+"','"+option3+"','"+option4+"','"+answer+"','"+str(session['ex_id'])+"')"
+    res = db.insert(qry)
+    return viewexam_questions(str(session['ex_id']))
+
+@app.route('/viewexam_questions/<id>')
+def viewexam_questions(id):
+    db=Db()
+    session["ex_id"]=id
+    qry="SELECT * FROM exam_question WHERE ex_id='"+id+"'"
+    res = db.select(qry)
+    return render_template('Teacher/View Exam Question.html',data=res)
+
+@app.route('/delectexamquestion/<id>/<exid>')
+def delectexamquestion(id,exid):
+    db=Db()
+    qry=" DELETE FROM exam_question WHERE exq_id='"+id+"'"
+    res=db.delete(qry)
+    # path="/viewexam_questions/"+str(exid)
+    return '''<script>alert ("Exam Question Deleted Successfully ");window.location='/viewexam_questions1'</script>'''
+    # return viewexam_questions(exid)
+
+
+@app.route('/viewexam_questions1')
+def viewexam_questions1():
+    db=Db()
+    qry="SELECT * FROM exam_question WHERE ex_id='"+str(session["ex_id"])+"'"
+    res = db.select(qry)
+    return render_template('Teacher/View Exam Question.html',data=res)
+
+@app.route('/editexamquestion/<id>/<exid>')
+def editexamquestion(id,exid):
+    db= Db()
+    qry=" SELECT *FROM exam_question WHERE exq_id ='"+id+"'"
+    print(qry)
+    session["ex_id"]=exid
+    res=db.selectOne(qry)
+    return render_template('Teacher/Edit Exam Questions.html',data=res)
+
+@app.route('/editexamquestion_post',methods=['post'])
+def editexam_question():
+    db= Db()
+    exq_id= request.form['exq_id']
+    question = request.form['question']
+    option1 = request.form['option1']
+    option2 = request.form['option2']
+    option3= request.form['option3']
+    option4= request.form['option4']
+    answer= request.form['answer']
+    qry = "UPDATE exam_question SET question='" + question + "',optiona='" + option1 + "',optionb='" + option2 + "',optionc='" + option3 + "',optiond='" + option4 + "',answer='" + answer + "' WHERE exq_id='" + exq_id + "'"
+    print(qry)
+    res=db.update(qry)
+    return '''<script>alert ("Exam Question Edited Successfully ");window.location='/viewexam_questions1'</script>'''
 
 
 
