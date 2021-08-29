@@ -1,17 +1,14 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Add Image Puzzle</title>
-</head>
+{% extends "Admin/admin_index.html"%}
+{% block body %}
 <body>
-	<h2 align="center">Add Image Puzzle</h2>
+	
 	<form method="post" action="/addimagepuzzle_post" enctype="multipart/form-data">
-	<table width="442" height="185" border="3" align="center">
+	<table class="table align-items-center table-flush table-borderless" >
+    <h4 align="center">Add Image Puzzle</h4>
   <tbody>
     <tr>
-      <td>Puzzle</td>
-      <td><input type="text" name="puzzle" required/> </td>
+      <td>Puzzle Name</td>
+      <td><input type="text" name="puzzle" class="form-control" required/> </td>
     </tr>
     <tr>
       <td>Photo</td>
@@ -19,14 +16,14 @@
     </tr>
     <tr>
       <td>Time to Complete</td>
-      <td> <input type="number" name="time"/>minutes</td>
+      <td> <input type="number" class="form-control"  name="time"/>Minute</td>
     </tr>
     <tr>
-      <td colspan="2" align="center"><input type="submit" value="Save"/></td>
+      <td colspan="2" align="center"><input type="submit" value="Save" class="btn btn-primary"/></td>
     </tr>
   </tbody>
 </table>
 
 	</form>
 </body>
-</html>
+{% endblock %}

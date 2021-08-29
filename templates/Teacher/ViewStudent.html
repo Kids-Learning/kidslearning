@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>View Student</title>
+</head>
+
+<body>
+   <h2 align="center">View Student</h2>
+<table align="center" width="836" height="132" border="1">
+  <tr align="center">
+    <td width="84" height="36">Sl No</td>
+    <td width="72">Name</td>
+    <td width="77">Phone</td>
+    <td width="61">Age</td>
+    <td width="132">Photo</td>
+    <td width="46">Gender</td>
+    <td width="81">Standered</td>
+    <td width="99">&nbsp;</td>
+  </tr>
+    {% for i in data %}
+  <tr align="center">
+    <td>{{ loop.index }}</td>
+    <td>{{ i['name'] }}</td>
+    <td>{{ i['phone'] }}</td>
+    <td>{{ i['age'] }}</td>
+    <td><img src="{{ i['photo'] }}" width="132" height="96" /></td></td>
+    <td>{{ i['gender'] }}</td>
+    <td>{{ i['standered'] }}</td>
+    <td width="126">
+    <a href="/viewperfomance/{{ i["log_id"] }}">View Perfomance</a></td>
+  </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

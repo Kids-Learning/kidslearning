@@ -1,4 +1,4 @@
-from re import A
+from re import A, template
 from flask import Flask, render_template, request
 from flask.globals import session
 from DBConnection import Db
@@ -11,6 +11,21 @@ static_path = "C:\\Users\\user\\Desktop\\project\\Kids Learning\\static\\"
 @app.route('/')
 def hello_world():
     return render_template("Login.html")
+
+# @app.route('/login_new')
+# def login_new():
+#     return render_template("loginn.html")
+
+@app.route('/resetpassword')
+def resetpassword():
+    return render_template("reset-password.html")
+
+@app.route('/resetpassword_post', methods=['post'])
+def resetpassword_post():
+    return '''<script>alert (" We have emailed your password ! ");window.location='/'</script>'''
+
+
+
 
 
 @app.route('/login_post', methods=["post"])
@@ -35,7 +50,7 @@ def login_post():
 
 @app.route('/parentsignup')
 def parent_signup():
-    return render_template("Parent Signup.html")
+    return render_template("Parent Signup_2.html")
 
 
 @app.route('/parentsignup_post', methods=['post'])
@@ -54,7 +69,7 @@ def parentsignup_post():
     qry = "INSERT INTO login(`username`,`password`,`type`) VALUES('" + email + "','" + password + "','parent') "
     lid = db.insert(qry)
 
-    qry2 = "INSERT INTO parents(`name`,`photo`,`phone`,`dob`,`place`,`gender`,log_id)VALUES('" + name + "','" + path + "','" + phone + "','" + dob + "','" + place + "','" + gender + "','" + str(
+    qry2 = "INSERT INTO parents(`name`,`photo`,`phone`,`email`,`dob`,`place`,`gender`,log_id)VALUES('" + name + "','" + path + "','" + phone + "','"+email+"','" + dob + "','" + place + "','" + gender + "','" + str(
         lid) + "')"
     db.insert(qry2)
     return '''<script>alert ("Parent singup sucessfully");window.location='/'</script>'''
@@ -84,6 +99,11 @@ def teachersigup_post():
     qry1 = "INSERT INTO teachers(`name`,`phone`,`photo`,`place`,`qualification`,`dob`,`gender`,email)VALUES('" + name + "','" + phone + "','" + path + "','" + place + "','" + qualification + "','" + dob + "','" + gender + "','" + email + "')"
     db.insert(qry1)
     return '''<script>alert ("Teachers singup sucessfully");window.location='/'</script>'''
+
+@app.route('/admin_index')
+def admin_index():
+    return render_template("Admin/admin_index.html")
+
 
 
 @app.route('/addrhymes')
@@ -568,7 +588,35 @@ def viewperfomance(id):
     total_pr=db.selectOne(qry)
     qry1="SELECT COUNT(`pr_id`)FROM `puzzle_result` WHERE `s_id`='"+id+"' AND result='pass'"
     mark_pr=db.selectOne(qry1)
-    return render_template("Parent/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr)
+
+    qry2="SELECT COUNT(`qr_id`) FROM `question_result` WHERE `st_id`='"+id+"'"
+    total_qr=db.selectOne(qry2)
+    qry3="SELECT COUNT(`qr_id`) FROM `question_result` WHERE `st_id`='"+id+"' AND result='1'"
+    mark_qr=db.selectOne(qry3)
+
+    qry4="SELECT COUNT(`nr_id`) FROM  `numerical_result` WHERE `st_id`='"+id+"'"
+    total_nr=db.selectOne(qry4)
+    qry5="SELECT COUNT(`nr_id`) FROM  `numerical_result` WHERE `st_id`='"+id+"'AND result='pass'"
+    mark_nr=db.selectOne(qry5)
+
+    qry6="SELECT COUNT(`or_id`) FROM `object_result` WHERE `st_id`='"+id+"'"
+    total_or=db.selectOne(qry6)
+    qry7="SELECT COUNT(`or_id`) FROM `object_result` WHERE `st_id`='"+id+"' AND result='pass'"
+    mark_or=db.selectOne(qry7)
+
+    qry8="SELECT COUNT(`wr_id`) FROM `word_result` WHERE `st_id`='"+id+"'"
+    total_wr=db.selectOne(qry8)
+    qry9="SELECT COUNT(`wr_id`) FROM `word_result` WHERE `st_id`='"+id+"' AND result='yes'"
+    mark_wr=db.selectOne(qry9)
+
+    qry10="SELECT COUNT(`hw_id`) FROM `handwriting`WHERE `st_id`='"+id+"'"
+    total_hw=db.selectOne(qry10)
+    qry11="SELECT COUNT(`hw_id`) FROM `handwriting` WHERE `st_id`='"+id+"' AND result='1'"
+    mark_hw=db.selectOne(qry10)
+    return render_template("Parent/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
+
+    
+    
 
 # ---------------------------------------TEACHER------------------------------------
 @app.route('/viewprofile')
@@ -737,6 +785,50 @@ def editexam_question():
     print(qry)
     res=db.update(qry)
     return '''<script>alert ("Exam Question Edited Successfully ");window.location='/viewexam_questions1'</script>'''
+
+@app.route('/viewstudent_teacher')
+def viewStudentTeacher():
+    db=Db()
+    qry="SELECT * FROM student"
+    res = db.select(qry)
+    return render_template('Teacher/ViewStudent.html',data=res)
+
+@app.route('/viewstudent_teacher/<id>')
+
+
+@app.route('/viewperfomanceteacher/<id>')
+def viewperfomance_teacher(id):
+    db=Db()
+    qry="SELECT COUNT(`pr_id`)FROM `puzzle_result` WHERE `s_id`='"+id+"'"
+    total_pr=db.selectOne(qry)
+    qry1="SELECT COUNT(`pr_id`)FROM `puzzle_result` WHERE `s_id`='"+id+"' AND result='pass'"
+    mark_pr=db.selectOne(qry1)
+
+    qry2="SELECT COUNT(`qr_id`) FROM `question_result` WHERE `st_id`='"+id+"'"
+    total_qr=db.selectOne(qry2)
+    qry3="SELECT COUNT(`qr_id`) FROM `question_result` WHERE `st_id`='"+id+"' AND result='1'"
+    mark_qr=db.selectOne(qry3)
+
+    qry4="SELECT COUNT(`nr_id`) FROM  `numerical_result` WHERE `st_id`='"+id+"'"
+    total_nr=db.selectOne(qry4)
+    qry5="SELECT COUNT(`nr_id`) FROM  `numerical_result` WHERE `st_id`='"+id+"'AND result='pass'"
+    mark_nr=db.selectOne(qry5)
+
+    qry6="SELECT COUNT(`or_id`) FROM `object_result` WHERE `st_id`='"+id+"'"
+    total_or=db.selectOne(qry6)
+    qry7="SELECT COUNT(`or_id`) FROM `object_result` WHERE `st_id`='"+id+"' AND result='pass'"
+    mark_or=db.selectOne(qry7)
+
+    qry8="SELECT COUNT(`wr_id`) FROM `word_result` WHERE `st_id`='"+id+"'"
+    total_wr=db.selectOne(qry8)
+    qry9="SELECT COUNT(`wr_id`) FROM `word_result` WHERE `st_id`='"+id+"' AND result='yes'"
+    mark_wr=db.selectOne(qry9)
+
+    qry10="SELECT COUNT(`hw_id`) FROM `handwriting`WHERE `st_id`='"+id+"'"
+    total_hw=db.selectOne(qry10)
+    qry11="SELECT COUNT(`hw_id`) FROM `handwriting` WHERE `st_id`='"+id+"' AND result='1'"
+    mark_hw=db.selectOne(qry10)
+    return render_template("Parent/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
 
 
 

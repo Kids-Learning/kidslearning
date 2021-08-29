@@ -1,25 +1,21 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Add Numerical Problems</title>
-</head>
+{% extends "Admin/admin_index.html"%}
+{% block body %}
 <body>
     
-	<h2 align="center">Add Numerical Problems</h2>
+	<h4 align="center">Add Numerical Problems</h4>
 	<form method="post" action="/addnumerical_post" enctype="multipart/form-data">
-	<table width="298" height="141" border="1" align="center">
-  <tbody>
-    <tr>
-      <td>Question</td>
-      <td><input type="text" name="question" required/></td>
+    <table class="table align-items-center table-flush table-borderless" >
+      <tbody>
+    <tr >
+      <td align="center">Question</td>
+      <td align="left"><input type="text" name="question" class="form-control" placeholder="Question" required/></td>
+    </tr>
+    <tr  >
+      <td align="center">Answer</td>
+      <td align="left"><input type="text" name="answer" class="form-control" placeholder="Answer" required/></td>
     </tr>
     <tr>
-      <td>Answer</td>
-      <td><input type="text" name="answer" required/></td>
-    </tr>
-    <tr>
-      <td colspan="2" align="center"><input type="submit" valuee="submit" /></td>
+      <td colspan="2" align="center" ><input type="submit" value="Save"  class="btn btn-primary"/></td>
     </tr>
   </tbody>
 </table>
@@ -28,4 +24,4 @@
 	</form>
 	
 </body>
-</html>
+{% endblock %}

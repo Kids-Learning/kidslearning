@@ -1,24 +1,20 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Add Words</title>
-</head>
+{% extends "Admin/admin_index.html"%}
+{% block body %}
 <body>
-	<h3 align="center"> Add Words</h3>
+	<h4  align="center"> Add Word</h4>
 	<form action="/addwords_post" method="post" enctype="multipart/form-data">
-		<table width="294" height="119" border="3" align="center">
+		<table class="table align-items-center table-flush table-borderless">
   <tbody>
     <tr>
-      <td>Word</td>
-      <td><input type="text" name="word" required/></td>
+      <td  align="center">Word</td>
+      <td><input type="text" name="word" class="form-control" placeholder="Enter Word Here" required/></td>
     </tr>
     <tr>
-      <td colspan="2" align="center" ><input type="submit" value="Save"/></td>
+      <td colspan="2" align="center" ><input type="submit" class="btn btn-primary" value="Save"/></td>
     </tr>
   </tbody>
 </table>
 
 	</form>
 </body>
-</html>
+{% endblock %}
