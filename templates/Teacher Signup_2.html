@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Parent SignUp</title>
+    <title>Teacher SignUp</title>
     <!-- loader-->
     <link href="/static/assets/css/pace.min.css" rel="stylesheet" />
     <script src="/static/assets/js/pace.min.js"></script>
@@ -24,7 +24,7 @@
 
 </head>
 
-<body class="bg-theme bg-theme1" >
+<body class="bg-theme bg-theme1">
 
     <!-- start loader -->
     <div id="pageloader-overlay" class="visible incoming">
@@ -45,8 +45,8 @@
                     <div class="text-center">
                         <img src="/static/assets/images/logo-icon.png" alt="logo icon">
                     </div>
-                    <div class="card-title text-uppercase text-center py-3">Parent Sign Up</div>
-                    <form method="post" action="/parentsignup_post" enctype="multipart/form-data">
+                    <div class="card-title text-uppercase text-center py-3">Teacher Sign Up</div>
+                    <form method="post" action="/teachersigup_post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="INput Name" class="sr-only">Name</label>
                             <div class="position-relative has-icon-right">
@@ -94,7 +94,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+                                   
                                             <div class="form-group">
                                                 <label for="exampleInputEmailId" class="sr-only">Date of Birth</label>
                                                 <div class="position-relative has-icon-right">
@@ -112,6 +112,17 @@
                                                         required>
                                                     <div class="form-control-position">
                                                         <i class="icon-home"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Qualification" class="sr-only">Qualification</label>
+                                                <div class="position-relative has-icon-right">
+                                                    <input type="text" id="exampleInputEmailId" name="qualification"
+                                                        class="form-control input-shadow" placeholder="Enter Your Qualification"
+                                                        required>
+                                                    <div class="form-control-position">
+                                                        <i class="fa fa-graduation-cap" aria-hidden="true"></i>
                                                     </div>
                                                 </div>
                                             </div>
@@ -236,7 +247,7 @@
     <!-- Custom scripts -->
     <script src="/static/assets/js/app-script.js"></script>
 
-    <!--Photo,Date  Js & CSS  -->
+    <!--Photo,Date Menu Js & CSS  -->
     <script>
         const realFileBtn = document.getElementById("real-file");
         const customBtn = document.getElementById("custom-button");
@@ -294,12 +305,12 @@
         -webkit-appearance: none;
         }
 
-        /* For IE10 */
-        select::-ms-expand {
-        display: none;
-        } 
+/* For IE10 */
+select::-ms-expand {
+  display: none;
+} 
     </style>
-    <!--Photo,Date  Js & CSS -->
+    <!--Photo,Date Menu Js & CSS -->
     
 
 

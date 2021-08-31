@@ -77,7 +77,7 @@ def parentsignup_post():
 
 @app.route('/teachersignup')
 def teacher_signup():
-    return render_template("Teacher Signup.html")
+    return render_template("Teacher Signup_2.html")
 
 
 @app.route('/teachersigup_post', methods=['post'])
