@@ -1,31 +1,27 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Add Exam</title>
-</head>
+{% extends "Teacher/teacher_index.html"%}
+{% block body %}
 
 <body>
 
-<h2 align="center"> Add Exam</h2>
-<table align="center" width="200" border="1">
+<h4 align="center"> Add Exam</h4>
+<table class="table align-items-center table-flush table-borderless" >
   <tr align="center">
     <form action="/addexam_post" method="post">
     <td>Subject</td>
-    <td><input name="subject" type="text" /></td>
+    <td><input name="subject" class="form-control" type="text" /></td>
   </tr>
   <tr align="center">
     <td>Date</td>
-    <td><input name="date" type="date" /></td>
+    <td><input name="date" class="form-control" type="date" /></td>
   </tr>
   <tr align="center">
     <td>Time</td>
-    <td><input name="time" type="time" /></td>
+    <td><input name="time" class="form-control" type="time" /></td>
   </tr>
   <tr align="center">
-    <td align="center"><input name="Submit" type="submit" value="Save" /></td>
+    <td align="center" colspan="2"><input name="Submit" type="submit" class="btn btn-primary"value="Save" /></td>
   </tr>
 </table>
 </form>
 </body>
-</html>
+{% endblock %}

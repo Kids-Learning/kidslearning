@@ -1,25 +1,21 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Edit Numerical Problems</title>
-</head>
+{% extends "Admin/admin_index.html"%}
+{% block body %}
 <body>
 
 	<h2 align="center">Edit Numerical Problems</h2>
 	<form method="post" action="/editnumericalproblem_post" enctype="multipart/form-data">
-	<table width="298" height="141" border="1" align="center">
-  <tbody>
+    <table class="table align-items-center table-flush table-borderless" >
+      <tbody>
     <tr><input type="hidden" name="num_id" value="{{ data['num_id'] }}"/>
       <td>Question</td>
-      <td><input type="text" name="question" value="{{ data['question'] }}" required/> </td>
+      <td><input type="text"  class="form-control" name="question" value="{{ data['question'] }}" required/> </td>
     </tr>
     <tr>
       <td>Answer</td>
-      <td><input type="text" name="answer" value="{{ data['answer'] }}" required/> </td>
+      <td><input type="text" class="form-control" name="answer" value="{{ data['answer'] }}" required/> </td>
     </tr>
     <tr>
-      <td colspan="2" align="center"><input type="submit" valuee="submit" /></td>
+      <td colspan="2" align="center"><input type="submit" class="btn btn-primary"valuee="submit" /></td>
     </tr>
   </tbody>
 </table>
@@ -28,4 +24,4 @@
 	</form>
 
 </body>
-</html>
+{% endblock %}

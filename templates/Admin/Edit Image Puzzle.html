@@ -1,20 +1,18 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Edit Image Puzzle</title>
-</head>
+{% extends "Admin/admin_index.html"%}
+{% block body %}
 <body>
-	<h2 align="center">Edit Image Puzzle</h2>
+	
+
+	<h4 align="center">Edit Image Puzzle</h4>
 	<form method="post" action="/editimagepuzzle_post" enctype="multipart/form-data">
-	<table width="442" height="185" border="3" align="center">
-  <tbody>
+    <table class="table align-items-center table-flush table-borderless" >
+      <tbody>
    <tr>
-      <td colspan="2" align="center"><img src="{{ data["image"]  }}" width= "200px" height="200px"/> </td>
+      <td colspan="2" align="center"><img src="{{ data["image"]  }}" /> </td>
   </tr>
     <tr><input type="hidden" name="puz_id" value="{{ data['puz_id'] }}"/>
       <td>Puzzle</td>
-      <td><input type="text" name="puzzle" value="{{ data['puzzle'] }}" required/> </td>
+      <td><input type="text" class="form-control" name="puzzle" value="{{ data['puzzle'] }}" required/> </td>
     </tr>
     <tr>
       <td>Photo</td>
@@ -22,14 +20,14 @@
     </tr>
     <tr>
       <td>Time to Complete</td>
-      <td> <input type="number" name="time" value="{{ data['time'] }}"/>minutes</td>
+      <td> <input type="number" name="time" class="form-control" value="{{ data['time'] }}"/>minutes</td>
     </tr>
     <tr>
-      <td colspan="2" align="center"><input type="submit" value="Save"/></td>
+      <td colspan="2" align="center"><input type="submit" class="btn btn-primary" value="Save"/></td>
     </tr>
   </tbody>
 </table>
 
 	</form>
 </body>
-</html>
+{% endblock %}

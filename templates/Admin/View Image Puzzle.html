@@ -1,13 +1,9 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>View Image Puzzle</title>
-</head>
+{% extends "Admin/admin_index.html"%}
+{% block body %}
 <body>
-	<h3 align="center">View Image Puzzle </h3>
-	<table width="489" height="177" border="3" align="center">
-  <tbody>
+	<h4 align="center">View Image Puzzle </h4>
+  <table class="table align-items-center table-flush table-borderless" >
+    <tbody>
     <tr align="center">
       <td  width="46">Sl No</td>
       <td  width="77">Puzzle</td>
@@ -21,12 +17,12 @@
       <td>{{ i['puzzle'] }}</td>
       <td> <img src="{{ i["image"]}}" width="132" height="96" /></td>
       <td>{{ i['time'] }}</td>
-      <td align="center"><a href="/editimagepuzzle/{{ i["puz_id"] }}">Edit</a>
-		<a href="/deleteimagepuzzle/{{ i["puz_id"] }}">Delete</a></td>
+      <td align="center"><a href="/editimagepuzzle/{{ i["puz_id"] }}" class="btn btn-warning">Edit</a>
+		<a href="/deleteimagepuzzle/{{ i["puz_id"] }}" class="btn btn-danger">Delete</a></td>
     </tr>
   {% endfor %}
   </tbody>
 </table>
 
 </body>
-</html>
+{% endblock %}

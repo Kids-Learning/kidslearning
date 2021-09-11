@@ -1,16 +1,12 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>View Teachers</title>
-</head>
+{% extends "Admin/admin_index.html"%}
+{% block body %}
 <body>
-	<h1 align="center">View Teachers </h1>
+	<h4 align="center">View Teachers </h4>
 	<form action="/searchtechers" method="post">
-<table width="1250" height="235" border="4" align="center">
-  <tbody>
+    <table class="table align-items-center table-flush table-borderless" >
+      <tbody>
     <tr>
-           <td colspan="9" align="right"><input type="text" name="search"/><input type="submit" value="Search"/></td>
+           <td colspan="7" align="right"><input type="text" name="search" class="form-control"/></td><td><input type="submit" value="Search" class="btn btn-warning"/></td>
 
     </tr>
     <tr align="center">
@@ -33,11 +29,11 @@
       <td>{{ i['qualification'] }}</td>
       <td>Phone:- {{i['phone']}}<br>
 		Email:-{{i['email']}}</td>
-      <td><a href="/deleteteachers//{{ i["t_id"] }}">Remove</a></td>
+      <td><a href="/deleteteachers//{{ i["t_id"] }}" class="btn btn-danger">Remove</a></td>
     </tr>
   {% endfor %}
   </tbody>
 </table>
 </form>
 </body>
-</html>
+{% endblock %}

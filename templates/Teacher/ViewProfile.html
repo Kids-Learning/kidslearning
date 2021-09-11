@@ -1,17 +1,13 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>View Profile</title>
-</head>
+{% extends "Teacher/teacher_index.html"%}
+{% block body %}
 <body>
 <form action="/" method="post" enctype="multipart/form-data">
-	<table width="205" height="373" border="1" 
-		   align="center">
+  <table class="table align-items-center table-flush table-borderless" >
+
   <tbody>
-	  <h1 align="center"> View Profile </h1>
+	  <h4 align="center"> View Profile </h4>
     <tr>
-      <td align="center" colspan="2"><img src="{{ i['photo']}}" width="49" height="41"/></td>
+      <td align="center" colspan="2"><img src="{{ i['photo']}}" /></td>
     </tr>
     <tr>
       <td>Name</td>
@@ -50,4 +46,4 @@
 </form>
 
 </body>
-</html>
+{% endblock %}

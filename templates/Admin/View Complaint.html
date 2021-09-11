@@ -1,23 +1,20 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>View Complaint and Sent replay</title>
-</head>
+{% extends "Admin/admin_index.html"%}
+{% block body %}
+
 <body>
-	<h2 align="center">View Complaints</h2>
-    <table align="center">
-  <tr>
+	<h4 align="center">View Complaints</h4>
+  <table class="table align-items-center table-flush table-borderless" >
+    <tr>
       <form action="/viewcomplaint_post" method="post"  >
       <td colspan="2">Date From</td>
-      <td colspan="2"><input type="date" name="datefrom"/></td>
-		<td colspan="2">Date to</td>
-		<td><input type="date" name="dateto"/>
-		<input type="submit" value="Search"/></td>
+      <td colspan="2"><input type="date" name="datefrom" class="form-control"/></td>
+		  <td colspan="2">Date to</td>
+		<td colspan="2"><input type="date" name="dateto" class="form-control"/></td>
+	<td colspan="2"><input type="submit" value="Search" class="btn btn-warning"/></td>
     </tr>
 </table><br>
 
-	<table width="483" height="135" border="1" align="center">
+<table class="table align-items-center table-flush table-borderless" >
   <tbody>
   
     <tr align="center">
@@ -36,7 +33,7 @@
       <td> <img src="{{ i["photo"]}}" width="132" height="96" /></td>
       <td>{{ i["complaint"] }}</td>
         {% if i["reply"]=="pending" %}
-      <td><a href="/sentreplay/{{ i['c_id'] }}">Replay</a></td>
+      <td><a href="/sentreplay/{{ i['c_id'] }}" class="btn btn-success">Replay</a></td>
     {% else %}
     <td>{{ i["reply"] }}</td>
     {% endif %}
@@ -48,4 +45,4 @@
 		
 </form>
 </body>
-</html>
+{% endblock %}

@@ -1,32 +1,28 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>View Rhymes</title>
-</head>
+{% extends "Admin/admin_index.html"%}
+{% block body %}
 <body>
-	<h1 align="center">View Rhymes</h1>
-<table width="440" height="178" border="1" 
-	   align="center">
+	<h4 align="center">View Rhymes</h4>
+  <table class="table align-items-center table-flush table-borderless" >
+
   <tbody>
-    <tr>
-      <th width="101">Sl No</th>
-      <th width="111">Rhyme</th>
+    <tr align="center">
+      <th  width="101">Sl No</th>
+      <th  width="111">Rhyme</th>
       <th colspan="2">&nbsp;</th>
       
       
     </tr>
     {% for i in data %}
-    <tr>
+    <tr align="center">
       <td align="center">{{ loop.index }}</td>
       <td align="center">{{ i["name"] }}</td>
-        <td width="63" align="center"><a href="{{ i["file"] }}" download >Download</a></td>
+        <td width="63" align="center"><a href="{{ i["file"] }}" download class="btn btn-primary">Download</a></td>
 
-      <td width="54" align="center"><a href="/deleterhyme/{{ i["r_id"] }}">Delete</a></td>
+      <td width="54" align="center"><a href="/deleterhyme/{{ i["r_id"] }}" class="btn btn-danger">Delete</a></td>
     {% endfor %}
     </tr>
   </tbody>
 </table>
 
 </body>
-</html>
+{% endblock %}

@@ -1,31 +1,27 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Edit Object</title>
-</head>
+{% extends "Admin/admin_index.html"%}
+{% block body %}
 <body>
 	<h2 align="center">Edit Object</h2>
     <form action="/editobject_post" method="post" enctype="multipart/form-data" >
-	<table width="307" height="162" border="1" align="center" >
-  <tbody>
+      <table class="table align-items-center table-flush table-borderless" >
+        <tbody>
   <tr>
       <td colspan="2" align="center"><img src="{{ data["photo"]  }}" width= "200px" height="200px"/> </td>
   </tr>
     <tr><input type="hidden" name="ob_id" value="{{ data['ob_id'] }}"/>
       <td>Name</td>
-      <td><input type="text" name="name" value="{{ data['name'] }}" required /></td>
+      <td><input type="text" class="form-control" name="name" value="{{ data['name'] }}" required /></td>
     </tr>
     <tr>
       <td>File</td>
-      <td><input type="file" name="file"  /></td>
+      <td><input type="file" class="form-control" name="file"  /></td>
     </tr>
     <tr>
-      <td colspan="2" align="center"><input type="submit" value="Save"/></td>
+      <td colspan="2" align="center"><input type="submit" value="Save" class="btn btn-primary"/></td>
     </tr>
   </tbody>
 </table>
     </form>
 
 </body>
-</html>
+{% endblock %}
