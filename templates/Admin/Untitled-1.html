@@ -1,21 +1,25 @@
-{% extends "Parent/parent_index.html"%}
-{% block body %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+</head>
 
 <body>
-    <table class="table align-items-center table-flush table-borderless" >  <tr>
-        <tbody>
-    <td colspan="2" >Puzzle Result</td>
+<table width="310" border="1">
+  <tr>
+    <td colspan="2" align="center">Puzzle Result</td>
   </tr>
   <tr>
     <th width="130" >Total Questions</td>
     <th width="164">Mark</td>
   </tr>
-   <tr >
+   <tr>
         <td>{{total_pr['COUNT(`pr_id`)']}}</td> 
         <td>{{mark_pr['COUNT(`pr_id`)']}}</td>
     </tr>
 </table>
-<table class="table align-items-center table-flush table-borderless" >
+<table width="310" border="1">
   <tr>
     <td colspan="2" align="center">Word Result</td>
   </tr>
@@ -29,7 +33,7 @@
         </tr>
 </table>
 
-<table class="table align-items-center table-flush table-borderless" >
+<table width="310" border="1">
   <tr>
     <td colspan="2" align="center">Question Result</td>
   </tr>
@@ -43,7 +47,7 @@
     </tr>
 </table>
 
-<table class="table align-items-center table-flush table-borderless" >
+<table width="310" border="1">
   <tr>
     <td colspan="2" align="center">Object Result</td>
   </tr>
@@ -57,7 +61,7 @@
     </tr>
 </table>
 
-<table class="table align-items-center table-flush table-borderless" >
+<table width="310" border="1">
   <tr>
     <td colspan="2" align="center">Handwriting Result</td>
   </tr>
@@ -71,7 +75,7 @@
     </tr>
 </table>
 
-<table class="table align-items-center table-flush table-borderless" >
+<table width="310" border="1">
   <tr>
     <td colspan="2" align="center">Numerical Result</td>
   </tr>
@@ -84,6 +88,6 @@
         <td>{{mark_nr['COUNT(`nr_id`)']}}</td>
     </tr>
 </table>
-</tbody>
+
 </body>
-{% endblock %}
+</html>

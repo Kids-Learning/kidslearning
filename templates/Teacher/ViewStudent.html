@@ -1,14 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>View Student</title>
-</head>
+{% extends "Teacher/teacher_index.html"%}
+{% block body %}
 
 <body>
-   <h2 align="center">View Student</h2>
-<table align="center" width="836" height="132" border="1">
-  <tr align="center">
+   <h4 align="center">View Student</h4>
+   <table class="table align-items-center table-flush table-borderless" >
+    <tr align="center">
     <td width="84" height="36">Sl No</td>
     <td width="72">Name</td>
     <td width="77">Phone</td>
@@ -28,9 +24,9 @@
     <td>{{ i['gender'] }}</td>
     <td>{{ i['standered'] }}</td>
     <td width="126">
-    <a href="/viewperfomance/{{ i["log_id"] }}">View Perfomance</a></td>
+    <a href="/viewperfomanceteacher/{{ i["log_id"] }}" class="btn btn-info">View Perfomance</a></td>
   </tr>
     {% endfor %}
 </table>
 </body>
-</html>
+{% endblock %}

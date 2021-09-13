@@ -1,26 +1,22 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Edit Study Materials</title>
-</head>
+{% extends "Teacher/teacher_index.html"%}
+{% block body %}
 
 <body>
-<h2>Edit Study Materials</h2>
-<table width="200" border="1">
+<h4 align="center">Edit Study Materials</h4>
+<table class="table align-items-center table-flush table-borderless" >
   <form method="post" action="/editstudymeterial_post" >
   <tr><input type="hidden" name="m_id" value="{{ data['m_id'] }}"/>
     <td>Subject</td>
-    <td><input name="subject" type="text" value="{{ data['subject'] }}" /></td>
+    <td><input name="subject" type="text" value="{{ data['subject'] }}"  class="form-control"/></td>
   </tr>
   <!-- <tr>
     <td>File</td>
     <td><input name="file" type="file" /></td>
   </tr> -->
   <tr>
-    <td colspan="2"><input type="submit"  name="submit" value="Save" /></td>
+    <td align="center" colspan="2"><input type="submit"  name="submit" class="btn btn-primary"value="Save" /></td>
   </tr>
 </table>
 </form>
 </body>
-</html>
+{% endblock %}

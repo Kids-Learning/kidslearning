@@ -1,15 +1,11 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>View Exam</title>
-</head>
+{% extends "Teacher/teacher_index.html"%}
+{% block body %}
 <body>
-	<h1 align="center">View Exam</h1>
-<table width="634" height="178" border="1" 
-	   align="center">
+	<h4 align="center">View Exam</h4>
+  <table class="table align-items-center table-flush table-borderless" >
+
   <tbody>
-    <tr>
+    <tr align="center">
       <th width="123">Sl No</th>
       <th width="135">Subject</th>
       <th width="82">Date</th>
@@ -25,14 +21,14 @@
         <td width="82" align="center">{{ i["date"] }}</td>
         <td width="82" align="center">{{ i["time"] }}</td>
         
-      <td width="178" align="center"><a href="/deleteexam/{{ i["ex_id"] }}">Delete</a><br>
-        <a href="/editexam/{{ i["ex_id"] }}">Edit</a> <br>
-        <a href="/addexam_question/{{ i["ex_id"] }}">Add Exam Questions</a><br>
-        <a href="/viewexam_questions/{{ i["ex_id"] }}">View Exam Questions</a></td>
+      <td width="178" align="center"><a href="/deleteexam/{{ i["ex_id"] }}" class="btn btn-danger">Delete</a>
+        <a href="/editexam/{{ i["ex_id"] }}" class="btn btn-warning">Edit</a> <br><br>
+        <a href="/addexam_question/{{ i["ex_id"] }}" class="btn btn-success">Add Exam Questions</a><br><br>
+        <a href="/viewexam_questions/{{ i["ex_id"] }}" class="btn btn-primary">View Exam Questions</a></td>
     {% endfor %}
     </tr>
   </tbody>
 </table>
 
 </body>
-</html>
+{% endblock %}

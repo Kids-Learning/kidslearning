@@ -1,32 +1,28 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>View StudyMaterials</title>
-</head>
+{% extends "Teacher/teacher_index.html"%}
+{% block body %}
 <body>
 	<h3 align="center">View StudyMaterials </h3>
-	<table width="489" height="177" border="3" align="center">
-  <tbody>
+  <table class="table align-items-center table-flush table-borderless" >
+    <tbody>
     <tr align="center">
-      <td  width="46">Sl No</td>
-      <td  width="77">Subject</td>
-      <td  width="121">File</td>
-      <td  width="110">Date</td>
-      <td width="137">&nbsp;</td>
+      <th  width="46">Sl No</th>
+      <th  width="77">Subject</th>
+      <th  width="121">File</th>
+      <th  width="110">Date</th>
+      <th width="137">&nbsp;</th>
     </tr>
      {% for i in data %}
     <tr align="center">
       <td>{{ loop.index }} </td>
       <td>{{ i['subject'] }}</td>
-      <td> <a href="{{ i["file"] }}" download >Download to View</a></td>
+      <td> <a href="{{ i["file"] }}" download class="btn btn-success">Download to View</a></td>
       <td>{{ i['date'] }}</td>
-      <td align="center"><a href="/editstudymeterial/{{ i["m_id"] }}">Edit Name</a>
-		<a href="/deletestudymeterial/{{ i["m_id"] }}">Delete</a></td>
+      <td align="center"><a href="/editstudymeterial/{{ i["m_id"] }}" class="btn btn-warning">Edit Name</a>
+		<a href="/deletestudymeterial/{{ i["m_id"] }}" class="btn btn-danger">Delete</a></td>
     </tr>
   {% endfor %}
   </tbody>
 </table>
 
 </body>
-</html>
+{% endblock %}

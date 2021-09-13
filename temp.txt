@@ -1,7 +1,15 @@
-{% extends "Teacher/teacher_index.html"%}
+{% extends "Parent/parent_index.html"%}
 {% block body %}
 
 <table class="table align-items-center table-flush table-borderless" >
 
 
 {% endblock %}
+
+@app.route('/detailtoadmin')
+def detail_to_admin():
+    db= Db()
+    qry="SELECT username FROM login WHERE type='admin'"
+    res=db.select(qry)
+    print(res)
+    return render_template("Admin/admin_index.html",data=res)

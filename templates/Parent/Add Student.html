@@ -1,31 +1,33 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Add student</title>
-</head>
+{% extends "Parent/parent_index.html"%}
+{% block body %}
 
 <body>
 <form action="/addstudent_post" method="post" enctype="multipart/form-data">
-<h2 align="center"> Add Student</h2>
+<h4 align="center"> Add Student</h4>
 
-<table align="center" width="316" height="304" border="1">
+<table class="table align-items-center table-flush table-borderless" >
   <tr>
     <td width="154">Name</td>
-    <td width="146"><input type="text" name="name" id="textfield5" /></td>
+    <td width="146"><input type="text" name="name" id="textfield5" class="form-control" /></td>
   </tr>
   <tr>
     <td>Phone</td>
-    <td><input type="text" name="phone" id="textfield" /></td>
+    <td><input type="text" name="phone" id="textfield" class="form-control" /></td>
   </tr>
       <tr>
     <td height="51">Age</td>
-    <td><input type="text" name="age" id="textfield3" /></td>
+    <td><input type="text" name="age" id="textfield3" class="form-control"/></td>
   </tr>
-  <tr>
-    <td>Photo</td>
-    <td><input type="file" name="photo" id="textfield2" /></td>
-  </tr>
+</tr>
+<tr>
+<td height="51">Standered</td>
+<td><input type="text" name="standered" id="textfield3" class="form-control" /></td>
+</tr>
+<tr>
+<td height="51">Email</td>
+<td><input type="email" name="email" id="textfield3" class="form-control" /></td>
+</tr>
+  
 
   <tr>
     <td height="68">Gender</td>
@@ -36,21 +38,19 @@
       <p>
   <input type="radio" name="gender" id="radio" value="Female" />
       Female</p></td>
-  </tr>
-    <tr>
-    <td height="51">Standered</td>
-    <td><input type="text" name="standered" id="textfield3" /></td>
-  </tr>
+
+      <tr>
+        <td>Photo</td>
+        <td><input type="file" name="photo" id="textfield2" class="form-control" /></td>
+      </tr>
+ 
   <tr>
-    <td height="51">Email</td>
-    <td><input type="email" name="email" id="textfield3" /></td>
+    <td align="center" colspan="2"><input type="submit" name="button" id="button" value="Submit" class="btn btn-primary"/></td> 
   </tr>
-  <tr>
-    <td align="center" colspan="2"><input type="submit" name="button" id="button" value="Submit" /></td> 
-  </tr>
+  
 </table>
 
-
 </form>
+
 </body>
-</html>
+{% endblock %}

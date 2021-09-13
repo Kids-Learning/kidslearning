@@ -1,19 +1,19 @@
 {% extends "Teacher/teacher_index.html"%}
 {% block body %}
 <body>
-<h2>Upload Study Materials</h2>
+<h4 align="center"> Upload Study Materials</h>
 <table class="table align-items-center table-flush table-borderless" >
   <form method="post" action="/studymaterials_post" enctype="multipart/form-data">
   <tr>
     <td>Subject</td>
-    <td><input name="subject" type="text" /></td>
+    <td><input name="subject" type="text" class="form-control"/></td>
   </tr>
   <tr>
     <td>File</td>
-    <td><input name="file" type="file" /></td>
+    <td><input name="file" type="file" class="form-control" /></td>
   </tr>
   <tr>
-    <td colspan="2"><input type="submit"  name="submit" value="Save" /></td>
+    <td colspan="2" align="center"><input type="submit"  name="submit" value="Save"  class="btn btn-primary"/></td>
   </tr>
 </table>
 </form>

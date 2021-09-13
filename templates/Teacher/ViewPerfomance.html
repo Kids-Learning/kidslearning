@@ -1,88 +1,89 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>View Student Perfomance</title>
-</head>
+{% extends "Teacher/teacher_index.html"%}
+{% block body %}
+
 <body>
-<div id="puzzle result" >
-Puzzle Result
-<table>
-    <tr>
-        <th>Total Questions</th>
-        <th>Mark</th>
-    </tr>
-    <tr>
-        <td>{{total_pr['COUNT(`pr_id`)']}}</td> </td>
+    <table class="table align-items-center table-flush table-borderless" >  <tr>
+        <tbody>
+    <td colspan="2" >Puzzle Result</td>
+  </tr>
+  <tr>
+    <th width="130" >Total Questions</td>
+    <th width="164">Mark</td>
+  </tr>
+   <tr >
+        <td>{{total_pr['COUNT(`pr_id`)']}}</td> 
         <td>{{mark_pr['COUNT(`pr_id`)']}}</td>
     </tr>
 </table>
-</div><div id="Word result" >
-    Word  Result
-    <table>
-        <tr>
-            <th>Total Questions</th>
-            <th>Mark</th>
-        </tr>
-        <tr>
+<table class="table align-items-center table-flush table-borderless" >
+  <tr>
+    <td colspan="2" align="center">Word Result</td>
+  </tr>
+  <tr>
+    <th width="130" align="center">Total Questions</td>
+    <th width="164">Mark</td>
+  </tr>
+  <tr>
             <td>{{total_wr['COUNT(`wr_id`)']}}</td> </td>
             <td>{{mark_wr['COUNT(`wr_id`)']}}</td>
         </tr>
-    </table>
-    </div>
-<div id="Question result">
-Question Result
-<table>
-    <tr>
-        <th>Total questions</th>
-        <th>Mark</th>
-    </tr>
-    <tr>
+</table>
+
+<table class="table align-items-center table-flush table-borderless" >
+  <tr>
+    <td colspan="2" align="center">Question Result</td>
+  </tr>
+  <tr>
+    <th width="130">Total Questions</td>
+    <th width="164">Mark</td>
+  </tr>
+  <tr>
         <td>{{total_qr['COUNT(`qr_id`)']}}</td> </td>
         <td>{{mark_qr['COUNT(`qr_id`)']}}</td>
     </tr>
 </table>
-</div>
-<div id="object result">
-object Result
-<table>
-    <tr>
-        <th>Total questions</th>
-        <th>Mark</th>
-    </tr>
+
+<table class="table align-items-center table-flush table-borderless" >
+  <tr>
+    <td colspan="2" align="center">Object Result</td>
+  </tr>
+  <tr>
+    <th width="130">Total Questions</td>
+    <th width="164">Mark</td>
+  </tr>
     <tr>
         <td>{{total_or['COUNT(`or_id`)']}}</td> </td>
         <td>{{mark_or['COUNT(`or_id`)']}}</td>
     </tr>
 </table>
 
-</div>
-<div id="handwriting result">
-handwriting Result
-<table>
-    <tr>
-        <th>Total Questions</th>
-        <th>Mark</th>
-    </tr>
-    <tr>
+<table class="table align-items-center table-flush table-borderless" >
+  <tr>
+    <td colspan="2" align="center">Handwriting Result</td>
+  </tr>
+  <tr>
+    <th width="130">Total Questions</td>
+    <th width="164">Mark</td>
+  </tr>
+   <tr>
         <td>{{total_hw['COUNT(`hw_id`)']}}</td> </td>
         <td>{{mark_hw['COUNT(`hw_id`)']}}</td>
     </tr>
 </table>
-</div>
-<div id="Numerical result">
-Numerical Result
 
-<table>
-    <tr>
-        <th>Total questions</th>
-        <th>Mark</th>
-    </tr>
-    <tr>
+<table class="table align-items-center table-flush table-borderless" >
+  <tr>
+    <td colspan="2" align="center">Numerical Result</td>
+  </tr>
+  <tr>
+    <th width="130">Total Questions</td>
+    <th width="164">Mark</td>
+  </tr>
+  <tr>
         <td>{{total_nr['COUNT(`nr_id`)']}}</td> </td>
         <td>{{mark_nr['COUNT(`nr_id`)']}}</td>
     </tr>
 </table>
-</div>
+</tbody>
 </body>
-</html>
+{% endblock %}

@@ -24,6 +24,11 @@ def resetpassword():
 def resetpassword_post():
     return '''<script>alert (" We have emailed your password ! ");window.location='/'</script>'''
 
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return render_template("Login.html")
+
 
 
 
@@ -34,6 +39,7 @@ def login_post():
     username = request.form["username"]
     password = request.form["password"]
     qry = "SELECT * FROM login WHERE username='" + username + "' AND PASSWORD='" + password + "'"
+    
     res = db.selectOne(qry)
     if res is not None:
         type = res["type"]
@@ -100,9 +106,14 @@ def teachersigup_post():
     db.insert(qry1)
     return '''<script>alert ("Teachers singup sucessfully");window.location='/'</script>'''
 
-@app.route('/admin_index')
-def admin_index():
-    return render_template("Admin/admin_index.html")
+#---------------------------------ADMIN-------------------------------------------------------------------
+# @app.route('/admin_index')
+# def admin_index():
+#     db= Db()
+#     qry="SELECT username FROM login WHERE type='admin'"
+#     res=db.select(qry)
+#     print(res)
+#     return render_template("Admin/admin_index.html", data=res)
 
 
 
@@ -502,8 +513,44 @@ def editimagepuzzle_post():
         res = db.update(qry)
         return '''<script>alert ("Image Puzzle  Edited  Successfully ");window.location='/viewimagepuzzle'</script>'''
 
+@app.route('/changepassword')
+def change_password():
+    return render_template("Admin/Change Password.html")
+
+@app.route('/changepassword_post', methods=['post'])
+def changepassword_post():
+    db=Db()
+    email=request.form['email']
+    oldpassword=request.form['oldpassword']
+    newpassword=request.form['newpassword']
+    qry="UPDATE login SET password='"+newpassword+"' WHERE username='"+email+"' AND password='"+oldpassword+"' "
+    res=db.update(qry)
+    return '''<script>alert ("Password  Changed  Successfully ");window.location='/'</script>'''
+
 
 # ---------------------------------------PARENT  ------------------------------------
+
+@app.route('/changepassword_parent')
+def change_passwordparent():
+    return render_template("Parent/Change Password.html")
+
+@app.route('/changepasswordparent_post',methods=['post'])
+def changepasswordparent_post():
+    db=Db()
+    lid=str(session["log_id"])
+    email=request.form['email']
+    oldpassword=request.form['oldpassword']
+    newpassword=request.form['newpassword']
+    qry1="select * from login where username='"+email+"' and password='"+oldpassword+"' and log_id='"+lid+"'"
+    res1=db.selectOne(qry1)
+    if res1 is not None:
+         qry="UPDATE login SET password='"+newpassword+"' WHERE username='"+email+"' AND password='"+oldpassword+"' AND log_id='"+str(session["log_id"])+"'"
+         print(qry)
+         res=db.update(qry)
+         return '''<script>alert ("Password  Changed  Successfully ");window.location='/'</script>'''
+    else:
+        return '''<script>alert ("Your Email ID or Password Was Invalid ");window.location='/'</script>'''
+
 
 @app.route('/addstudent')
 def addstudent():
@@ -619,6 +666,11 @@ def viewperfomance(id):
     
 
 # ---------------------------------------TEACHER------------------------------------
+
+@app.route('/changepassword_teacher')
+def change_passwordteacher():
+    return render_template("Teacher/Change Password.html")
+
 @app.route('/viewprofile')
 def viewprofile():
     db=Db()
@@ -828,7 +880,7 @@ def viewperfomance_teacher(id):
     total_hw=db.selectOne(qry10)
     qry11="SELECT COUNT(`hw_id`) FROM `handwriting` WHERE `st_id`='"+id+"' AND result='1'"
     mark_hw=db.selectOne(qry10)
-    return render_template("Parent/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
+    return render_template("Teacher/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
 
 
 
