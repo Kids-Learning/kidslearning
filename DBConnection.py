@@ -4,7 +4,7 @@ import mysql.connector
 class Db:
     def __init__(self):
         self.cnx = mysql.connector.connect(host="localhost",user="root",password="",database="kids")
-        self.cur = self.cnx.cursor(dictionary=True)
+        self.cur = self.cnx.cursor(buffered=True,dictionary=True)
 
 
     def select(self, q):

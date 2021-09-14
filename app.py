@@ -2,19 +2,22 @@ from re import A, template
 from flask import Flask, render_template, request
 from flask.globals import session
 from DBConnection import Db
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__)
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT' #session key
 static_path = "C:\\Users\\user\\Desktop\\project\\Kids Learning\\static\\"
+# session["log_id"]="0"
 
 
 @app.route('/')
 def hello_world():
+    session["log_id"]="0"
     return render_template("Login.html")
 
-# @app.route('/login_new')
-# def login_new():
-#     return render_template("loginn.html")
+
 
 @app.route('/resetpassword')
 def resetpassword():
@@ -22,11 +25,42 @@ def resetpassword():
 
 @app.route('/resetpassword_post', methods=['post'])
 def resetpassword_post():
+    db= Db()
+    email=request.form['email']
+    qry="SELECT * FROM login WHERE username='"+email+"'" 
+    res=db.selectOne(qry)
+    if res is not None:
+        type = res["type"]
+        log_id=str(res["log_id"])
+        password=res["password"]
+        if (type == "admin"):
+            name="admin"
+        elif type == "parent":
+            qry1="SELECT * FROM parents WHERE log_id='"+log_id+"'"
+            res1=db.selectOne(qry1)
+            name=res1["name"]
+        elif type == "teacher":
+            qry2="SELECT * FROM teachers WHERE log_id='"+log_id+"'"
+            res2=db.selectOne(qry2)
+            name=res2["name"]
+        else:
+            name="user"
+    s = smtplib.SMTP(host='smtp.gmail.com', port=587)
+    s.starttls()
+    s.login("malabrkidslearning@gmail.com", "kids@malabar")
+    msg = MIMEMultipart()  # create a message.........."
+    message = "Messege from DNTL"
+    msg['From'] = "malabrkidslearning@gmail.com"
+    msg['To'] = email
+    msg['Subject'] = "Hai "+name+" Your Password For Kids Learning Web App"
+    body = "Your Account Password Reset Successfully. You Can login using This password - " + str(password)
+    msg.attach(MIMEText(body, 'plain'))
+    s.send_message(msg)
     return '''<script>alert (" We have emailed your password ! ");window.location='/'</script>'''
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
+    session["log_id"]="0"
     return render_template("Login.html")
 
 
@@ -119,7 +153,10 @@ def teachersigup_post():
 
 @app.route('/addrhymes')
 def add_rhymes():
-    return render_template("Admin/Add Rhymes.html")
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/Add Rhymes.html")
 
 
 @app.route('/addrhyme_post', methods=['post'])
@@ -139,7 +176,10 @@ def view_rhymes():
     db = Db()
     qry = "select * from rhymes"
     res = db.select(qry)
-    return render_template("Admin/View Rhyms.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/View Rhyms.html", data=res)
 
 
 @app.route('/deleterhyme/<id>')
@@ -155,7 +195,10 @@ def view_parants():
     db = Db()
     qry = "SELECT * FROM parents"
     res = db.select(qry)
-    return render_template("Admin/View Parants.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/View Parants.html", data=res)
 
 
 @app.route('/viewstudents/<id>')
@@ -163,7 +206,10 @@ def view_students(id):
     db = Db()
     qry = "SELECT * FROM  student WHERE p_id='" + id + "'"
     res = db.select(qry)
-    return render_template("Admin/View Students.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/View Students.html", data=res)
 
 
 @app.route('/viewteachers')
@@ -171,7 +217,10 @@ def view_teachers():
     db = Db()
     qry = "SELECT * FROM teachers "
     res = db.select(qry)
-    return render_template("Admin/View Teachers.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/View Teachers.html", data=res)
 
 
 @app.route('/deleteteachers/<id>')
@@ -196,7 +245,10 @@ def view_complaint():
     db = Db()
     qry = "SELECT complaint.*,parents.* FROM complaint INNER JOIN parents ON complaint.p_id=parents.log_id"
     res = db.select(qry)
-    return render_template("Admin/View Complaint.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/View Complaint.html", data=res)
 
 
 @app.route('/viewcomplaint_post', methods=['post'])
@@ -231,7 +283,10 @@ def sentreplay_post():
 
 @app.route('/addquestion')
 def add_question():
-    return render_template("Admin/Add Questions.html")
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/Add Questions.html")
 
 
 @app.route('/addquestion_post', methods=['post'])
@@ -253,7 +308,10 @@ def view_questions():
     db = Db()
     qry = "select * from question"
     res = db.select(qry)
-    return render_template("Admin/Question View.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/Question View.html", data=res)
 
 
 
@@ -270,7 +328,10 @@ def edit_question(id):
     db = Db()
     qry = "SELECT * FROM question WHERE q_id='" + id + "'"
     res = db.selectOne(qry)
-    return render_template("Admin/Edit Question.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/Edit Question.html", data=res)
 
 
 @app.route('/editquestion_post', methods=['post'])
@@ -290,7 +351,10 @@ def editquestion_post():
 
 @app.route('/addnumericalproblem')
 def add_numericproblem():
-    return render_template("Admin/Add Numerical Problems.html")
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/Add Numerical Problems.html")
 
 
 @app.route('/addnumerical_post', methods=['post'])
@@ -308,7 +372,10 @@ def view_numercalproblem():
     db = Db()
     qry = "select * from numerical_problem"
     res = db.select(qry)
-    return render_template("Admin/View Numerical Problems.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/View Numerical Problems.html", data=res)
 
 
 @app.route('/deletenumericalproblem/<id>')
@@ -324,7 +391,10 @@ def editnumericalproblem(id):
     db = Db()
     qry = "SELECT * FROM numerical_problem WHERE num_id='" + id + "'"
     res = db.selectOne(qry)
-    return render_template("Admin/Edit Numerical Problem.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/Edit Numerical Problem.html", data=res)
 
 
 @app.route('/editnumericalproblem_post', methods=['post'])
@@ -340,7 +410,10 @@ def editnumericalproblem_post():
 
 @app.route('/addobject')
 def add_object():
-    return render_template("Admin/Add object.html")
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/Add object.html")
 
 
 @app.route('/addobject_post', methods=['post'])
@@ -360,7 +433,10 @@ def view_object():
     db = Db()
     qry = "select * from objects"
     res = db.select(qry)
-    return render_template("Admin/View Objects.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/View Objects.html", data=res)
 
 
 @app.route('/deleteobject/<id>')
@@ -402,7 +478,10 @@ def editobject_post():
 
 @app.route('/addwords')
 def add_words():
-    return render_template("Admin/Add Words.html")
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/Add Words.html")
 
 
 @app.route('/addwords_post', methods=['post'])
@@ -419,7 +498,10 @@ def view_words():
     db = Db()
     qry = "SELECT * FROM word"
     res = db.select(qry)
-    return render_template("Admin/View words.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/View words.html", data=res)
 
 
 @app.route('/deletewords/<id>')
@@ -450,7 +532,10 @@ def editwords_post():
 
 @app.route('/addimagepuzzle')
 def addimage_puzzle():
-    return render_template("Admin/Add Image Puzzle.html")
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/Add Image Puzzle.html")
 
 
 @app.route('/addimagepuzzle_post', methods=['post'])
@@ -471,7 +556,10 @@ def view_image_puzzle():
     db = Db()
     qry = "SELECT * FROM puzzle"
     res = db.select(qry)
-    return render_template("Admin/View Image Puzzle.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/View Image Puzzle.html", data=res)
 
 
 @app.route('/deleteimagepuzzle/<id>')
@@ -515,7 +603,10 @@ def editimagepuzzle_post():
 
 @app.route('/changepassword')
 def change_password():
-    return render_template("Admin/Change Password.html")
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Admin/Change Password.html")
 
 @app.route('/changepassword_post', methods=['post'])
 def changepassword_post():
@@ -554,7 +645,10 @@ def changepasswordparent_post():
 
 @app.route('/addstudent')
 def addstudent():
-    return render_template("Parent/Add Student.html")
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Parent/Add Student.html")
 
 
 @app.route('/addstudent_post',methods=['post'])
@@ -580,7 +674,10 @@ def viewstudent():
     db=Db()
     qry="SELECT * FROM student WHERE p_id='"+str(session["log_id"])+"' "
     res=db.select(qry)
-    return render_template("Parent/ViewStudent.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Parent/ViewStudent.html", data=res)
 
 @app.route('/deletestudent/<id>')
 def deleteStudent(id):
@@ -626,7 +723,10 @@ def viewteachers():
     db= Db()
     qry="SELECT *FROM teachers"
     res=db.select(qry)
-    return render_template("Parent/View Teachers2.html",data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Parent/View Teachers2.html",data=res)
 
 @app.route('/viewperfomance/<id>')
 def viewperfomance(id):
@@ -660,7 +760,10 @@ def viewperfomance(id):
     total_hw=db.selectOne(qry10)
     qry11="SELECT COUNT(`hw_id`) FROM `handwriting` WHERE `st_id`='"+id+"' AND result='1'"
     mark_hw=db.selectOne(qry10)
-    return render_template("Parent/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Parent/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
 
     
     
@@ -676,11 +779,17 @@ def viewprofile():
     db=Db()
     qry="SELECT * FROM teachers WHERE log_id='"+str(session["log_id"])+"'"
     res=db.selectOne(qry)
-    return render_template("Teacher/ViewProfile.html", i=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Teacher/ViewProfile.html", i=res)
 
 @app.route('/studymaterials')
 def studymaterials():
-    return render_template("Teacher/studymaterial.html")
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Teacher/studymaterial.html")
 
 @app.route('/studymaterials_post', methods=['post'])
 def studymaterials_post():
@@ -698,7 +807,10 @@ def viewstudymeterial():
     db= Db()
     qry="SELECT * FROM study_meterials WHERE t_id='"+str(session["log_id"])+"'"
     res=db.select(qry)
-    return render_template("Teacher/View Studymaterials.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Teacher/View Studymaterials.html", data=res)
 
 @app.route('/deletestudymeterial/<id>')
 def deletestudymeterial(id):
@@ -725,7 +837,10 @@ def editstudymeterial_post():
 
 @app.route('/addexam')
 def adddexam():
-    return render_template("Teacher/Add Exam.html")
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Teacher/Add Exam.html")
 
 
 @app.route('/addexam_post', methods=['post'])
@@ -743,7 +858,10 @@ def viewexam():
     db= Db()
     qry="SELECT * FROM exam WHERE t_id='"+str(session["log_id"])+"'"
     res=db.select(qry)
-    return render_template("Teacher/View Exam.html", data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Teacher/View Exam.html", data=res)
 
 @app.route('/deleteexam/<id>')
 def deleteexam(id):
@@ -774,7 +892,10 @@ def editexam_post():
 @app.route('/addexam_question/<id>')
 def addquestion_teacher(id):
     session["ex_id"]=id
-    return render_template('Teacher/Add Exam Questions.html')
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template('Teacher/Add Exam Questions.html')
 
 @app.route('/addexamquestion_post', methods=['post'])
 def addexamquestion_post():
@@ -795,7 +916,10 @@ def viewexam_questions(id):
     session["ex_id"]=id
     qry="SELECT * FROM exam_question WHERE ex_id='"+id+"'"
     res = db.select(qry)
-    return render_template('Teacher/View Exam Question.html',data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template('Teacher/View Exam Question.html',data=res)
 
 @app.route('/delectexamquestion/<id>/<exid>')
 def delectexamquestion(id,exid):
@@ -812,7 +936,10 @@ def viewexam_questions1():
     db=Db()
     qry="SELECT * FROM exam_question WHERE ex_id='"+str(session["ex_id"])+"'"
     res = db.select(qry)
-    return render_template('Teacher/View Exam Question.html',data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template('Teacher/View Exam Question.html',data=res)
 
 @app.route('/editexamquestion/<id>/<exid>')
 def editexamquestion(id,exid):
@@ -843,9 +970,11 @@ def viewStudentTeacher():
     db=Db()
     qry="SELECT * FROM student"
     res = db.select(qry)
-    return render_template('Teacher/ViewStudent.html',data=res)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template('Teacher/ViewStudent.html',data=res)
 
-@app.route('/viewstudent_teacher/<id>')
 
 
 @app.route('/viewperfomanceteacher/<id>')
@@ -880,7 +1009,10 @@ def viewperfomance_teacher(id):
     total_hw=db.selectOne(qry10)
     qry11="SELECT COUNT(`hw_id`) FROM `handwriting` WHERE `st_id`='"+id+"' AND result='1'"
     mark_hw=db.selectOne(qry10)
-    return render_template("Teacher/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Teacher/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
 
 
 
