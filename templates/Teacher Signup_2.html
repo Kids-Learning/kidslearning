@@ -62,13 +62,13 @@
                                     <div class="position-group has-icon-right">
                                         <select style="font-size: small;" class="form-control input-shadow"
                                             name="gender" placeholder="Select Gender" required>
-                                            
+
                                             <option selected="true" disabled="disabled"> Select Gender</option>
                                             <option name="gender" value="male">Male</option>
                                             <option name="gender" value="female">Female</option>
                                         </select>
                                         <div class="form-control-position">
-                                                                                        
+
                                         </div>
 
                                     </div> <br>
@@ -94,56 +94,57 @@
                                             </div>
                                         </div>
                                     </div>
-                                   
-                                            <div class="form-group">
-                                                <label for="exampleInputEmailId" class="sr-only">Date of Birth</label>
-                                                <div class="position-relative has-icon-right">
-                                                    <input placeholder="Date of Birth" name="dateofbirth" font-size="small"  class="form-control" type="text" onfocus="(this.type='date')" id="date">
-                                                    <div class="form-control-position">
-                                                        <i class="icon-calendar"></i>
-                                                    </div>
-                                                </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmailId" class="sr-only">Date of Birth</label>
+                                        <div class="position-relative has-icon-right">
+                                            <input placeholder="Date of Birth" name="dateofbirth" font-size="small"
+                                                class="form-control" type="text" onfocus="(this.type='date')" id="date">
+                                            <div class="form-control-position">
+                                                <i class="icon-calendar"></i>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="Place" class="sr-only">Place</label>
-                                                <div class="position-relative has-icon-right">
-                                                    <input type="text" id="exampleInputEmailId" name="place"
-                                                        class="form-control input-shadow" placeholder="Enter Your place"
-                                                        required>
-                                                    <div class="form-control-position">
-                                                        <i class="icon-home"></i>
-                                                    </div>
-                                                </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Place" class="sr-only">Place</label>
+                                        <div class="position-relative has-icon-right">
+                                            <input type="text" id="exampleInputEmailId" name="place"
+                                                class="form-control input-shadow" placeholder="Enter Your place"
+                                                required>
+                                            <div class="form-control-position">
+                                                <i class="icon-home"></i>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="Qualification" class="sr-only">Qualification</label>
-                                                <div class="position-relative has-icon-right">
-                                                    <input type="text" id="exampleInputEmailId" name="qualification"
-                                                        class="form-control input-shadow" placeholder="Enter Your Qualification"
-                                                        required>
-                                                    <div class="form-control-position">
-                                                        <i class="fa fa-graduation-cap" aria-hidden="true"></i>
-                                                    </div>
-                                                </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Qualification" class="sr-only">Qualification</label>
+                                        <div class="position-relative has-icon-right">
+                                            <input type="text" id="exampleInputEmailId" name="qualification"
+                                                class="form-control input-shadow" placeholder="Enter Your Qualification"
+                                                required>
+                                            <div class="form-control-position">
+                                                <i class="fa fa-graduation-cap" aria-hidden="true"></i>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="Photo" class="sr-only">Photo</label>
-                                                <div class="position-relative has-icon-right">
-        
-                                                    <input type="file" accept="image/png, image/jpeg" name="photo"
-                                                        class="form-control" id="real-file" hidden="hidden" />
-                                                    <button type="button" class="form-control" id="custom-button">Choose
-                                                        Image</button>
-                                                    <span id="custom-text">No file chosen, yet.</span>
-                                                    <!-- <input type="file" name="photo" id="img" size="12px" accept="image/png, image/jpeg" class="form-control input-shadow" placeholder="Select Photo" required /> -->
-                                                    <div class="form-control-position">
-                                                        <i class="icon-camera"></i>
-                                                    </div>
-                                                    <br>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Photo" class="sr-only">Photo</label>
+                                        <div class="position-relative has-icon-right">
+
+                                            <input type="file" accept="image/png, image/jpeg" name="photo"
+                                                class="form-control" id="real-file" hidden="hidden" />
+                                            <button type="button" class="form-control" id="custom-button">Choose
+                                                Image</button>
+                                            <span id="custom-text">No file chosen, yet.</span>
+                                            <!-- <input type="file" name="photo" id="img" size="12px" accept="image/png, image/jpeg" class="form-control input-shadow" placeholder="Select Photo" required /> -->
+                                            <div class="form-control-position">
+                                                <i class="icon-camera"></i>
+                                            </div>
+                                            <br>
                                             <div class="form-group">
                                                 <label for="exampleInputPassword" class="sr-only">Password</label>
                                                 <div class="position-relative has-icon-right">
-                                                    <input type="password" name="password" id="exampleInputPassword"
+                                                    <input type="password" name="password" id="password"
                                                         class="form-control input-shadow" placeholder="Enter Password">
                                                     <div class="form-control-position">
                                                         <i class="icon-lock"></i>
@@ -154,12 +155,13 @@
                                             <div class="form-group">
                                                 <label for="confirmpassword" class="sr-only">Confirm Password</label>
                                                 <div class="position-relative has-icon-right">
-                                                    <input type="password" id="exampleInputPassword"
+                                                    <input type="password" id="confirm_password"
                                                         class="form-control input-shadow"
                                                         placeholder="Confirm Password">
                                                     <div class="form-control-position">
                                                         <i class="icon-lock"></i>
                                                     </div>
+                                                    <span id="msg" ></span>
                                                 </div>
                                             </div>
 
@@ -170,8 +172,7 @@
 			     </div>
 			    </div> -->
 
-                                            <input type="submit" value="Sign up"
-                                                class="btn btn-light btn-block waves-effect waves-light" />
+                     <input type="submit" value="Sign up"  class="btn btn-light btn-block waves-effect waves-light" onclick="return check()" />
 
 
                                             <!-- <div class="form-row mt-4">
@@ -266,6 +267,22 @@
                 customTxt.innerHTML = "No file chosen, yet.";
             }
         });
+
+      
+        function check() {
+            var password = document.getElementById("password").value;
+            var confirm_password = document.getElementById("confirm_password").value;
+            if (password != confirm_password) {
+                document.getElementById('msg').innerHTML = "Password Missmatch"
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+    
+
+
     </script>
 
     <style>
@@ -277,8 +294,8 @@
             border: 1px solid #000;
             border-radius: 5px;
             cursor: pointer;
-            height:38px;
-            border:  0px solid #e5eaef;
+            height: 38px;
+            border: 0px solid #e5eaef;
         }
 
         #custom-button:hover {
@@ -291,30 +308,29 @@
             font-size: 0.8em;
             color: #aaa;
         }
-        
+
 
         input[type="date"]::-webkit-inner-spin-button,
         input[type="date"]::-webkit-calendar-picker-indicator {
-        display: none;
-        -webkit-appearance: none;
-        }
-        select {
-        /* for Firefox */
-        -moz-appearance: none;
-        /* for Chrome */
-        -webkit-appearance: none;
+            display: none;
+            -webkit-appearance: none;
         }
 
-/* For IE10 */
-select::-ms-expand {
-  display: none;
-} 
+        select {
+            /* for Firefox */
+            -moz-appearance: none;
+            /* for Chrome */
+            -webkit-appearance: none;
+        }
+
+        /* For IE10 */
+        select::-ms-expand {
+            display: none;
+        }
     </style>
     <!--Photo,Date Menu Js & CSS -->
-    
 
-
-
+  
 </body>
 
 </html>

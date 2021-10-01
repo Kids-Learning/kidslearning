@@ -2,7 +2,7 @@
 {% block body %}
 	
 <body>
-	<h4 align="center">View Parants  </h4>
+	<h4 align="center"> Parants  Requests</h4>
   <table class="table align-items-center table-flush table-borderless" >
     <tbody>
     <tr>
@@ -10,9 +10,9 @@
       <td>Name</td>
       <td>Gender</td>
       <td>Place</td>
-      <td>Phone</td>
+      <td>Personal info</td>
       <td>Photo</td>
-      <td>Email</td>
+      <!-- <td>Email</td> -->
       <td>View option</td>
     </tr>
     {% for i in data %}
@@ -21,11 +21,11 @@
       <td>{{ i["name"] }}</td>
       <td>{{ i["gender"] }}</td>
       <td>{{ i["place"] }}</td>
-      <td>{{ i["phone"] }}</td>
+      <td>{{ i["phone"] }}<br>{{ i["email"] }}</td>
       <td align="center"><img src="{{ i["photo"]}}" width="106" height="71" /></td>
-      <td>{{ i["email"] }}</td>
-      <td><a href="/viewstudents/{{ i['log_id'] }}" class="btn btn-warning">View Student</a></td>
-      <!-- <td><a href="/viewstudents/{{ i['log_id'] }}" class="btn btn-warning">Delete Parent</a></td> -->
+      <!-- <td>{{ i["email"] }}</td> -->
+      <td><a href="/approve_reject/{{i['log_id']}}/parent/{{i['email']}}" class="btn btn-warning">Approve</a></td>
+      <td><a href="/approve_reject/{{i['log_id']}}/rejected/{{i['email']}}" class="btn btn-warning">Reject</a></td>
     </tr>
   {% endfor %}
   </tbody>

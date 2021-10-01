@@ -4,11 +4,12 @@
 <body>
     <table class="table align-items-center table-flush table-borderless" >  <tr>
         <tbody>
-    <td colspan="2" >Puzzle Result</td>
+    <td colspan="3" >Puzzle Result</td>
   </tr>
   <tr>
     <th width="130" >Total Questions</td>
     <th width="164">Mark</td>
+      <td rowspan="2"><img src="{{ pr_chart }}" height="150" width="150"/></td>
   </tr>
    <tr >
         <td>{{total_pr['COUNT(`pr_id`)']}}</td> 
@@ -26,6 +27,7 @@
   <tr>
             <td>{{total_wr['COUNT(`wr_id`)']}}</td> </td>
             <td>{{mark_wr['COUNT(`wr_id`)']}}</td>
+            <td rowspan="2"><img src="{{ wr_chart }}" height="150" width="150"/></td>
         </tr>
 </table>
 
@@ -36,6 +38,7 @@
   <tr>
     <th width="130">Total Questions</td>
     <th width="164">Mark</td>
+      <td rowspan="2"><img src="{{ qr_chart }}" height="150" width="150"/></td>
   </tr>
   <tr>
         <td>{{total_qr['COUNT(`qr_id`)']}}</td> </td>
@@ -54,6 +57,7 @@
     <tr>
         <td>{{total_or['COUNT(`or_id`)']}}</td> </td>
         <td>{{mark_or['COUNT(`or_id`)']}}</td>
+        <td rowspan="2"><img src="{{ or_chart }}" height="150" width="150"/></td>
     </tr>
 </table>
 
@@ -68,6 +72,7 @@
    <tr>
         <td>{{total_hw['COUNT(`hw_id`)']}}</td> </td>
         <td>{{mark_hw['COUNT(`hw_id`)']}}</td>
+        <td rowspan="2"><img src="{{ hw_chart }}" height="150" width="150"/></td>
     </tr>
 </table>
 
@@ -82,6 +87,7 @@
   <tr>
         <td>{{total_nr['COUNT(`nr_id`)']}}</td> </td>
         <td>{{mark_nr['COUNT(`nr_id`)']}}</td>
+        <td rowspan="2"><img src="{{ nr_chart }}" height="150" width="150"/></td>
     </tr>
 </table>
 </tbody>

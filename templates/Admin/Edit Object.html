@@ -1,12 +1,12 @@
 {% extends "Admin/admin_index.html"%}
 {% block body %}
 <body>
-	<h2 align="center">Edit Object</h2>
+	<h4 align="center">Edit Object</h4>
     <form action="/editobject_post" method="post" enctype="multipart/form-data" >
       <table class="table align-items-center table-flush table-borderless" >
         <tbody>
   <tr>
-      <td colspan="2" align="center"><img src="{{ data["photo"]  }}" width= "200px" height="200px"/> </td>
+      <td colspan="2" align="center"><img src="{{ data["photo"]  }}" width="106" height="71"/> </td>
   </tr>
     <tr><input type="hidden" name="ob_id" value="{{ data['ob_id'] }}"/>
       <td>Name</td>
@@ -14,7 +14,10 @@
     </tr>
     <tr>
       <td>File</td>
-      <td><input type="file" class="form-control" name="file"  /></td>
+      <td><input type="file" id="real-file" class="form-control" name="file" hidden="hidden"  />
+        <button type="button" class="form-control" id="custom-button">Choose a File</button>
+        <span id="custom-text">No file chosen, yet.</span>
+      </td>
     </tr>
     <tr>
       <td colspan="2" align="center"><input type="submit" value="Save" class="btn btn-primary"/></td>

@@ -1,5 +1,5 @@
 from re import A, template
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request,jsonify
 from flask.globals import session
 from DBConnection import Db
 import smtplib, ssl
@@ -16,6 +16,11 @@ static_path = "C:\\Users\\user\\Desktop\\project\\Kids Learning\\static\\"
 def hello_world():
     session["log_id"]="0"
     return render_template("Login.html")
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('Login.html'), 404
 
 
 
@@ -44,19 +49,25 @@ def resetpassword_post():
             res2=db.selectOne(qry2)
             name=res2["name"]
         else:
-            name="user"
-    s = smtplib.SMTP(host='smtp.gmail.com', port=587)
-    s.starttls()
-    s.login("malabrkidslearning@gmail.com", "kids@malabar")
-    msg = MIMEMultipart()  # create a message.........."
-    message = "Messege from DNTL"
-    msg['From'] = "malabrkidslearning@gmail.com"
-    msg['To'] = email
-    msg['Subject'] = "Hai "+name+" Your Password For Kids Learning Web App"
-    body = "Your Account Password Reset Successfully. You Can login using This password - " + str(password)
-    msg.attach(MIMEText(body, 'plain'))
-    s.send_message(msg)
-    return '''<script>alert (" We have emailed your password ! ");window.location='/'</script>'''
+            name=""
+        if name !="":
+            s = smtplib.SMTP(host='smtp.gmail.com', port=587)
+            s.starttls()
+            s.login("malabrkidslearning@gmail.com", "kids@malabar")
+            msg = MIMEMultipart()  # create a message.........."
+            message = "Messege from DNTL"
+            msg['From'] = "malabrkidslearning@gmail.com"
+            msg['To'] = email
+            msg['Subject'] = "Hai "+name+" Your Password For Kids Learning Web App"
+            body = "Your Account Password Reset Successfully. You Can login using This password - " + str(password)
+            msg.attach(MIMEText(body, 'plain'))
+            s.send_message(msg)
+            return '''<script>alert (" We have emailed your password ! ");window.location='/'</script>'''
+        else:
+             return '''<script>alert (" Invalid user ! ");window.location='/resetpassword'</script>'''
+
+    else:
+         return '''<script>alert (" Invalid user ! ");window.location='/resetpassword'</script>'''
 
 @app.route('/logout')
 def logout():
@@ -106,13 +117,17 @@ def parentsignup_post():
     dob = request.form['dateofbirth']
     place = request.form['place']
     password = request.form['password']
-    qry = "INSERT INTO login(`username`,`password`,`type`) VALUES('" + email + "','" + password + "','parent') "
-    lid = db.insert(qry)
+    qry2="SELECT * FROM parents WHERE email='"+email+"'"
+    res=db.selectOne(qry2)
+    if res is None:
+        qry = "INSERT INTO login(`username`,`password`,`type`) VALUES('" + email + "','" + password + "','pending') "
+        lid = db.insert(qry)
+        qry2 = "INSERT INTO parents(`name`,`photo`,`phone`,`email`,`dob`,`place`,`gender`,log_id)VALUES('" + name + "','" + path + "','" + phone + "','"+email+"','" + dob + "','" + place + "','" + gender + "','" + str(lid) + "')"
+        db.insert(qry2)
+        return '''<script>alert ("Parent singup sucessfully,After Admin Verification You will Recieve a Mail From Our Team");window.location='/'</script>'''
+    else:
+        return '''<script>alert ("Email Alredy Exist");window.location='/parentsignup'</script>'''
 
-    qry2 = "INSERT INTO parents(`name`,`photo`,`phone`,`email`,`dob`,`place`,`gender`,log_id)VALUES('" + name + "','" + path + "','" + phone + "','"+email+"','" + dob + "','" + place + "','" + gender + "','" + str(
-        lid) + "')"
-    db.insert(qry2)
-    return '''<script>alert ("Parent singup sucessfully");window.location='/'</script>'''
 
 
 @app.route('/teachersignup')
@@ -134,20 +149,64 @@ def teachersigup_post():
     dob = request.form['dateofbirth']
     place = request.form['place']
     password = request.form['password']
-    qry = "INSERT INTO login(`username`,`password`,`type`) VALUES('" + email + "','" + password + "','teacher') "
-    lid = db.insert(qry)
-    qry1 = "INSERT INTO teachers(`name`,`phone`,`photo`,`place`,`qualification`,`dob`,`gender`,email)VALUES('" + name + "','" + phone + "','" + path + "','" + place + "','" + qualification + "','" + dob + "','" + gender + "','" + email + "')"
-    db.insert(qry1)
-    return '''<script>alert ("Teachers singup sucessfully");window.location='/'</script>'''
+    qry2="SELECT * FROM teachers WHERE email='"+email+"'"
+    res= db.selectOne(qry2)
+    if res is None:
+        qry = "INSERT INTO login(`username`,`password`,`type`) VALUES('" + email + "','" + password + "','pending') "
+        lid = db.insert(qry)
+        qry1 = "INSERT INTO teachers(`name`,`phone`,`photo`,`place`,`qualification`,`dob`,`gender`,email,log_id)VALUES('" + name + "','" + phone + "','" + path + "','" + place + "','" + qualification + "','" + dob + "','" + gender + "','" + email + "','" + str(lid) + "')"
+        db.insert(qry1)
+        return '''<script>alert ("Teachers singup sucessfully,After Admin Verification You will Recieve a Mail From Our Team");window.location='/'</script>'''
+    else:
+        return '''<script>alert ("Email Alredy Exist");window.location='/teachersignup'</script>'''
+
 
 #---------------------------------ADMIN-------------------------------------------------------------------
 # @app.route('/admin_index')
 # def admin_index():
 #     db= Db()
-#     qry="SELECT username FROM login WHERE type='admin'"
+#     qry="SELECT * FROM login WHERE type='admin'"
 #     res=db.select(qry)
 #     print(res)
-#     return render_template("Admin/admin_index.html", data=res)
+#     return render_template("Admin/admin_index.html", i=res)
+
+@app.route('/view_parent_req')
+def view_parent_req():
+    db= Db()
+    qry="SELECT * FROM login INNER JOIN parents ON login.log_id=parents.log_id WHERE login.type='pending'"
+    res=db.select(qry)
+    return render_template("Admin/view_parent_req.html",data=res)
+
+@app.route('/approve_reject/<id>/<st>/<email>')
+def approve_reject(id,st,email):
+    db= Db()
+    qry="UPDATE login SET TYPE='"+st+"' WHERE log_id='"+id+"'"
+    res=db.update(qry)
+    s = smtplib.SMTP(host='smtp.gmail.com', port=587)
+    s.starttls()
+    s.login("malabrkidslearning@gmail.com", "kids@malabar")
+    msg = MIMEMultipart()  # create a message.........."
+    message = "Messege from DNTL"
+    msg['From'] = "malabrkidslearning@gmail.com"
+    msg['To'] = email
+    msg['Subject'] = "Kids Learning Web App Verification"
+    if(st=="parent"):
+        body = "Your Account has been verified by Our Team You Can Login with your email and Password"
+    else:
+         body = "Your Account has been rejected by Our Team You Can't Login with your email and Password"
+   
+
+    msg.attach(MIMEText(body, 'plain'))
+    s.send_message(msg)
+    if(st=="parent"):
+        return '''<script>alert ("Parent Approved Successfuly");window.location='/view_parent_req'</script>'''
+    else:
+         return '''<script>alert ("Parent Request Rejected");window.location='/view_parent_req'</script>'''
+ 
+
+
+
+
 
 
 
@@ -226,8 +285,10 @@ def view_teachers():
 @app.route('/deleteteachers/<id>')
 def deleteteachers(id):
     db = Db()
-    qry = "DELETE FROM teachers WHERE t_id='" + id + "'"
+    qry = "DELETE FROM teachers WHERE log_id='" + id + "'"
     res = db.delete(qry)
+    qry1="DELETE FROM login WHERE log_id='"+id+"'"
+    db.delete(qry1)
     return '''<script>alert (" Teacher Removed Successfully ");window.location='/viewteachers'</script>'''
 
 
@@ -616,7 +677,7 @@ def changepassword_post():
     newpassword=request.form['newpassword']
     qry="UPDATE login SET password='"+newpassword+"' WHERE username='"+email+"' AND password='"+oldpassword+"' "
     res=db.update(qry)
-    return '''<script>alert ("Password  Changed  Successfully ");window.location='/'</script>'''
+    return '''<script>alert ("Password  Changed  Successfully ,Please Login again");window.location='/'</script>'''
 
 
 # ---------------------------------------PARENT  ------------------------------------
@@ -635,10 +696,10 @@ def changepasswordparent_post():
     qry1="select * from login where username='"+email+"' and password='"+oldpassword+"' and log_id='"+lid+"'"
     res1=db.selectOne(qry1)
     if res1 is not None:
-         qry="UPDATE login SET password='"+newpassword+"' WHERE username='"+email+"' AND password='"+oldpassword+"' AND log_id='"+str(session["log_id"])+"'"
-         print(qry)
-         res=db.update(qry)
-         return '''<script>alert ("Password  Changed  Successfully ");window.location='/'</script>'''
+        qry="UPDATE login SET password='"+newpassword+"' WHERE username='"+email+"' AND password='"+oldpassword+"' AND log_id='"+str(session["log_id"])+"'"
+        print(qry)
+        res=db.update(qry)
+        return '''<script>alert ("Password  Changed  Successfully ");window.location='/'</script>'''
     else:
         return '''<script>alert ("Your Email ID or Password Was Invalid ");window.location='/'</script>'''
 
@@ -728,44 +789,179 @@ def viewteachers():
     else:
         return render_template("Parent/View Teachers2.html",data=res)
 
+@app.route("/par_chat_teacher/<uid>")
+def par_chat_teacher(uid):
+    session["seluid"]=uid
+    return render_template('Parent/chat_teacher.html', toid=uid)
+   
+
+
+@app.route("/par_chat_teacher_chk",methods=['post'])        # refresh messages chatlist
+def par_chat_teacher_chk():
+    uid=request.form['idd']
+    qry = "select date,msg,form_id from chat where (form_id='" + str(
+        session['log_id']) + "' and to_id='" + uid + "') or ((form_id='" + uid + "' and to_id='" + str(
+        session['log_id']) + "')) order by chat_id desc"
+    c = Db()
+    res = c.select(qry)
+    return jsonify(res)
+
+
+@app.route("/par_chat_teacher_post",methods=['POST'])
+def par_chat_teacher_post():
+    id=str(session["seluid"])
+    ta=request.form["ta"]
+    qry="insert into chat(msg,date,form_id,to_id) values('"+ta+"',CURDATE(),'"+str(session['log_id'])+"','"+id+"')"
+    d=Db()
+    d.insert(qry)
+    return render_template('Parent/chat_teacher.html', toid=id)
+    
+
+
+
+import matplotlib
+import datetime
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+def piechart(stat, scor, filename):
+    # Pie chart, where the slices will be ordered and plotted counter-clockwise:
+    # labels = 'Sale', 'Purchase'
+    # sizes = [random.randint(10,30), random.randint(30,50)]
+    explode = (0.1, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+
+    fig1, ax1 = plt.subplots()
+    ax1.pie(scor, explode=explode, labels=stat, autopct='%1.1f%%',
+            shadow=True, startangle=90)
+    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    
+    plt.savefig(static_path+"graphs/"+filename, dpi=100)
+    return "/static/graphs/"+filename
+
+
+
+
 @app.route('/viewperfomance/<id>')
 def viewperfomance(id):
     db=Db()
+    dt=datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+
+    ####        puzzle result
     qry="SELECT COUNT(`pr_id`)FROM `puzzle_result` WHERE `s_id`='"+id+"'"
     total_pr=db.selectOne(qry)
     qry1="SELECT COUNT(`pr_id`)FROM `puzzle_result` WHERE `s_id`='"+id+"' AND result='pass'"
     mark_pr=db.selectOne(qry1)
+
+    pr_stat=['pass', 'fail']
+    pr_score=[]
+    pr_score.append(int(mark_pr['COUNT(`pr_id`)']))                                         # pass
+    pr_score.append(int(total_pr['COUNT(`pr_id`)']) - int(mark_pr['COUNT(`pr_id`)']))       # fail
+    pr_filename=dt+"_pr.png"
+    pr_chart=piechart(pr_stat, pr_score, pr_filename)
+
+    ####        puzzle  result end
+    ################################ question result
 
     qry2="SELECT COUNT(`qr_id`) FROM `question_result` WHERE `st_id`='"+id+"'"
     total_qr=db.selectOne(qry2)
     qry3="SELECT COUNT(`qr_id`) FROM `question_result` WHERE `st_id`='"+id+"' AND result='1'"
     mark_qr=db.selectOne(qry3)
 
+    qr_stat=['pass', 'fail']
+    qr_score=[]
+    qr_score.append(int(mark_qr['COUNT(`qr_id`)']))                                         # pass
+    qr_score.append(int(total_qr['COUNT(`qr_id`)']) - int(mark_qr['COUNT(`qr_id`)']))       # fail
+    qr_filename=dt+"_qr.png"
+    qr_chart=piechart(qr_stat, qr_score, qr_filename)
+
+    ####        question result end
+    #########     Numerical result
+
     qry4="SELECT COUNT(`nr_id`) FROM  `numerical_result` WHERE `st_id`='"+id+"'"
     total_nr=db.selectOne(qry4)
     qry5="SELECT COUNT(`nr_id`) FROM  `numerical_result` WHERE `st_id`='"+id+"'AND result='pass'"
     mark_nr=db.selectOne(qry5)
 
+    nr_stat=['pass', 'fail']
+    nr_score=[]
+    nr_score.append(int(mark_nr['COUNT(`nr_id`)']))                                         # pass
+    nr_score.append(int(total_nr['COUNT(`nr_id`)']) - int(mark_nr['COUNT(`nr_id`)']))       # fail
+    nr_filename=dt+"_nr.png"
+    nr_chart=piechart(nr_stat, nr_score, nr_filename)
+                     #########     Numerical result End
+                      #########     Object result
     qry6="SELECT COUNT(`or_id`) FROM `object_result` WHERE `st_id`='"+id+"'"
     total_or=db.selectOne(qry6)
     qry7="SELECT COUNT(`or_id`) FROM `object_result` WHERE `st_id`='"+id+"' AND result='pass'"
     mark_or=db.selectOne(qry7)
+
+    or_stat=['pass', 'fail']
+    or_score=[]
+    or_score.append(int(mark_or['COUNT(`or_id`)']))                                         # pass
+    or_score.append(int(total_or['COUNT(`or_id`)']) - int(mark_or['COUNT(`or_id`)']))       # fail
+    or_filename=dt+"_or.png"
+    or_chart=piechart(or_stat, or_score, or_filename)
+             #########     Object  result End
 
     qry8="SELECT COUNT(`wr_id`) FROM `word_result` WHERE `st_id`='"+id+"'"
     total_wr=db.selectOne(qry8)
     qry9="SELECT COUNT(`wr_id`) FROM `word_result` WHERE `st_id`='"+id+"' AND result='yes'"
     mark_wr=db.selectOne(qry9)
 
+    wr_stat=['pass', 'fail']
+    wr_score=[]
+    wr_score.append(int(mark_wr['COUNT(`wr_id`)']))                                         # pass
+    wr_score.append(int(total_wr['COUNT(`wr_id`)']) - int(mark_wr['COUNT(`wr_id`)']))       # fail
+    wr_filename=dt+"_wr.png"
+    wr_chart=piechart(wr_stat, wr_score, wr_filename)
+
     qry10="SELECT COUNT(`hw_id`) FROM `handwriting`WHERE `st_id`='"+id+"'"
     total_hw=db.selectOne(qry10)
     qry11="SELECT COUNT(`hw_id`) FROM `handwriting` WHERE `st_id`='"+id+"' AND result='1'"
     mark_hw=db.selectOne(qry10)
+
+    hw_stat=['pass', 'fail']
+    hw_score=[]
+    hw_score.append(int(mark_hw['COUNT(`hw_id`)']))                                         # pass
+    hw_score.append(int(total_hw['COUNT(`hw_id`)']) - int(mark_hw['COUNT(`hw_id`)']))       # fail
+    hw_filename=dt+"_hw.png"
+    hw_chart=piechart(hw_stat, hw_score, hw_filename)
+
+
     if str(session["log_id"])=="0":
         return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
     else:
-        return render_template("Parent/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
+        return render_template("Parent/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr, pr_chart=pr_chart ,total_qr=total_qr,mark_qr=mark_qr, qr_chart=qr_chart ,total_nr=total_nr,mark_nr=mark_nr,nr_chart=nr_chart,total_or=total_or,mark_or=mark_or,or_chart=or_chart,total_wr=total_wr,mark_wr=mark_wr,wr_chart=wr_chart,total_hw=total_hw,mark_hw=mark_hw,hw_chart=hw_chart)
 
-    
+@app.route('/sent_complaint')
+def sent_complaint():
+     if str(session["log_id"])=="0":
+            return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+     else:
+         return render_template("Parent/send_complaints.html")
+
+   
+
+@app.route('/sentcomplaint', methods=['post'])
+def send_complaints():
+    db= Db()
+    complaint= request.form["complaint"]
+    plid=session["log_id"]
+    qry="INSERT INTO `complaint` (`p_id`,`complaint`,`date`,`reply`) VALUES('"+str(plid)+"','"+complaint+"',curdate(),'pending')"
+    res = db.insert(qry)
+    return '''<script>alert ("sent complaint Successfully");window.location='/sent_complaint'</script>'''
+
+@app.route('/viewreply')
+def viewreply():
+    db= Db()
+    p_id=session["log_id"]
+    qry="SELECT *FROM complaint WHERE p_id = '"+str(p_id)+"'"
+    res = db.select(qry)
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Parent/viewreply.html", data=res)
+
     
 
 # ---------------------------------------TEACHER------------------------------------
@@ -773,6 +969,23 @@ def viewperfomance(id):
 @app.route('/changepassword_teacher')
 def change_passwordteacher():
     return render_template("Teacher/Change Password.html")
+
+@app.route('/changepasswordteacher_post',methods=['post'])
+def changepasswordteacher_post():
+    db=Db()
+    lid=str(session["log_id"])
+    email=request.form['email']
+    oldpassword=request.form['oldpassword']
+    newpassword=request.form['newpassword']
+    qry1="select * from login where username='"+email+"' and password='"+oldpassword+"' and log_id='"+lid+"'"
+    res1=db.selectOne(qry1)
+    if res1 is not None:
+         qry="UPDATE login SET password='"+newpassword+"' WHERE username='"+email+"' AND password='"+oldpassword+"' AND log_id='"+str(session["log_id"])+"'"
+         print(qry)
+         res=db.update(qry)
+         return '''<script>alert ("Password  Changed  Successfully Please Login Again");window.location='/'</script>'''
+    else:
+        return '''<script>alert ("Your Email ID or Password Was Invalid ");window.location='/'</script>'''
 
 @app.route('/viewprofile')
 def viewprofile():
@@ -1014,7 +1227,44 @@ def viewperfomance_teacher(id):
     else:
         return render_template("Teacher/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
 
+#-------------------------------------------------ANDRIOD-STUDENT--------------------------------------------------
+
+@app.route('/login_post_student', methods=["post"])
+def login_post_student():
+    db = Db()
+    username = request.form["username"]
+    password = request.form["password"]
+    qry = "SELECT * FROM login WHERE username='" + username + "' AND PASSWORD='" + password + "'"
+    res = db.selectOne(qry)
+    if res is not None:
+        return jsonify (status="ok",log_id=res['log_id'],type=res['type'])
+    else:
+        return jsonify(status="no")
+    
+
+
+@app.route('/viewstudent_android', methods=['post'])
+def viewstudent_android():
+    db=Db()
+    lid=request.form['lid']
+    qry="SELECT * FROM student WHERE log_id='"+lid+"'"
+    res = db.selectOne(qry)
+    if res is not None:
+        return jsonify(status="ok",name=res['name'],phone=res['phone'],photo=res['photo'],age=res['age'],gender=res['gender'],standered=res['standered'])
+    else:
+        return jsonify(status="no")
+
+@app.route('/viewmaterial_student',methods=['post'])
+def viewmaterial_student():
+    db=Db()
+    qry="SELECT * FROM study_meterials INNER JOIN teachers ON `teachers`.`log_id`=study_meterials.`t_id`"
+    res=db.select(qry)
+    if len(res)==0:
+        return jsonify(status="no")
+    else:
+        return jsonify(status="ok",users=res)
+
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')

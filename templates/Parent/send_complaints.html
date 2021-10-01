@@ -1,0 +1,24 @@
+{% extends "Parent/parent_index.html"%}
+{% block body %}
+
+<body>
+<form  method="post" action="/sentcomplaint""enctype="multipart/form-data">
+<h4 align="center"> Sent Complaint </h4>
+
+<table class="table align-items-center table-flush table-borderless" >
+  <tr>
+    <td width="154">Complaint</td>
+    <td width="146"><input type="text" name="complaint" id="textfield5" class="form-control" /></td>
+  </tr>
+  
+ 
+  <tr>
+    <td align="center" colspan="2"><input type="submit" name="button" id="button" value="Sent" class="btn btn-primary"/></td> 
+  </tr>
+  
+</table>
+
+</form>
+
+</body>
+{% endblock %}
