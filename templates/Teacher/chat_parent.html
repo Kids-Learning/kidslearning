@@ -1,6 +1,6 @@
-{% extends "Parent/parent_index.html"%}
+{% extends "Teacher/teacher_index.html"%}
 {% block body %}
-<form id="form1" name="form1" method="post" action="/par_chat_teacher_post">
+<form id="form1" name="form1" method="post" action="/teacher_chat_parent_post">
     <center><h4><i>CHAT WITH TEACHERS</i></h4></center><br>
 <script src="/static/jquery.min.js"></script>
     <div class="col-md-12">
@@ -31,7 +31,7 @@
         tname = document.getElementById("hname").value;
         var ajax_call = function() {
             $.ajax({
-                url: '/par_chat_teacher_chk',
+                url: '/teacher_chat_parent_chk',
                 type: 'post',
                 data: {idd: toid},
                 success: function (response) {

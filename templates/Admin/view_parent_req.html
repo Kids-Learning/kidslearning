@@ -25,7 +25,7 @@
       <td align="center"><img src="{{ i["photo"]}}" width="106" height="71" /></td>
       <!-- <td>{{ i["email"] }}</td> -->
       <td><a href="/approve_reject/{{i['log_id']}}/parent/{{i['email']}}" class="btn btn-warning">Approve</a></td>
-      <td><a href="/approve_reject/{{i['log_id']}}/rejected/{{i['email']}}" class="btn btn-warning">Reject</a></td>
+      <td><a href="/approve_reject/{{i['log_id']}}/rejectedparent/{{i['email']}}" class="btn btn-warning">Reject</a></td>
     </tr>
   {% endfor %}
   </tbody>

@@ -152,7 +152,7 @@ def teachersigup_post():
     qry2="SELECT * FROM teachers WHERE email='"+email+"'"
     res= db.selectOne(qry2)
     if res is None:
-        qry = "INSERT INTO login(`username`,`password`,`type`) VALUES('" + email + "','" + password + "','pending') "
+        qry = "INSERT INTO login(`username`,`password`,`type`) VALUES('" + email + "','" + password + "','pendingt') "
         lid = db.insert(qry)
         qry1 = "INSERT INTO teachers(`name`,`phone`,`photo`,`place`,`qualification`,`dob`,`gender`,email,log_id)VALUES('" + name + "','" + phone + "','" + path + "','" + place + "','" + qualification + "','" + dob + "','" + gender + "','" + email + "','" + str(lid) + "')"
         db.insert(qry1)
@@ -204,6 +204,38 @@ def approve_reject(id,st,email):
          return '''<script>alert ("Parent Request Rejected");window.location='/view_parent_req'</script>'''
  
 
+@app.route('/view_teacher_req')
+def view_teacher_req():
+    db= Db()
+    qry="SELECT * FROM login INNER JOIN teachers ON login.log_id=teachers.log_id WHERE login.type='pendingt'"
+    res=db.select(qry)
+    return render_template("Admin/view_teachers_req.html",data=res)
+
+@app.route('/approve_reject_t/<id>/<st>/<email>')
+def approve_reject_t(id,st,email):
+    db= Db()
+    qry="UPDATE login SET TYPE='"+st+"' WHERE log_id='"+id+"'"
+    res=db.update(qry)
+    s = smtplib.SMTP(host='smtp.gmail.com', port=587)
+    s.starttls()
+    s.login("malabrkidslearning@gmail.com", "kids@malabar")
+    msg = MIMEMultipart()  # create a message.........."
+    message = "Messege from DNTL"
+    msg['From'] = "malabrkidslearning@gmail.com"
+    msg['To'] = email
+    msg['Subject'] = "Kids Learning Web App Verification"
+    if(st=="teacher"):
+        body = "Your Account has been verified by Our Team You Can Login with your email and Password"
+    else:
+         body = "Your Account has been rejected by Our Team Please Connect to Our Team For Review"
+   
+
+    msg.attach(MIMEText(body, 'plain'))
+    s.send_message(msg)
+    if(st=="teacher"):
+        return '''<script>alert ("Teacher request Approved Successfuly");window.location='/view_teacher_req'</script>'''
+    else:
+         return '''<script>alert ("Teacher Request Rejected");window.location='/view_teacher_req'</script>'''
 
 
 
@@ -609,6 +641,28 @@ def addimagepuzzle_post():
     time = request.form['time']
     qry = "INSERT INTO puzzle (puzzle,image,TIME)VALUES('" + puzzle + "','" + path + "','" + time + "')"
     res = db.insert(qry)
+
+    fname=photo.filename
+    from PIL import Image
+    img = Image.open(static_path+ "puzzleimage\\"+fname)
+    baseWidth = 800
+    baseheight = 800
+    img = img.resize((baseWidth, baseheight), Image.ANTIALIAS)
+    img.save(static_path+ "puzzleimage\\"+'jigsaw_resized_' + puzzle + ".jpg")
+    iPath = static_path+ "puzzleimage\\"+"jigsaw_resized_" + puzzle + ".jpg"
+    import cv2
+    img = cv2.imread(iPath)
+    k = 1
+
+    for i in range(0, 800, 200):
+        for j in range(0, 800, 200):
+            crop_img = img[i:i + 200, j:j + 200]
+            cv2.imshow('img', crop_img)
+            cv2.imwrite(
+                static_path+ "puzzleimage\\"+'jigsaw_sliced_' + str(
+                    k) + "-" + puzzle + ".jpg", crop_img)
+            k = k + 1
+
     return '''<script>alert ("Puzzle  Inserted Successfully ");window.location='/addimagepuzzle'</script>'''
 
 
@@ -652,14 +706,17 @@ def editimagepuzzle_post():
             path = "/static/puzzleimage/" + photo.filename
             qry = "UPDATE puzzle SET puzzle='" + puzzle + "',image='" + path + "',TIME='" + time + "' WHERE puz_id='" + puz_id + "'"
             res = db.update(qry)
+            print("hhhh1")
             return '''<script>alert ("Image Puzzle  Edited  Successfully ");window.location='/viewimagepuzzle'</script>'''
         else:
             qry = "UPDATE puzzle SET puzzle='" + puzzle + "',TIME='" + time + "' WHERE puz_id='" + puz_id + "'"
             res = db.update(qry)
+            print("hhhh2")
             return '''<script>alert ("Image Puzzle  Edited  Successfully ");window.location='/viewimagepuzzle'</script>'''
     else:
         qry = "UPDATE puzzle SET puzzle='" + puzzle + "',TIME='" + time + "' WHERE puz_id='" + puz_id + "'"
         res = db.update(qry)
+        print("hhhh3")
         return '''<script>alert ("Image Puzzle  Edited  Successfully ");window.location='/viewimagepuzzle'</script>'''
 
 @app.route('/changepassword')
@@ -768,13 +825,13 @@ def edit_student_post():
         if photo.filename !='':
             photo.save(static_path + "student\\" + photo.filename)
             path = "/static/student/" + photo.filename
-            qry="UPDATE student SET name='"+name+"',phone='"+phone+"',age='"+age+"',photo='"+path+"',standered='"+standered+"' WHERE s_id='"+s_id+"'"
+            qry="UPDATE student SET name='"+name+"',phone='"+phone+"',age='"+age+"',photo='"+path+"',standered='"+standered+"',gender='"+gender+"' WHERE s_id='"+s_id+"'"
             res=db.update(qry)
         else:
-             qry="UPDATE student SET name='"+name+"',phone='"+phone+"',age='"+age+"',standered='"+standered+"' WHERE s_id='"+s_id+"'"
+             qry="UPDATE student SET name='"+name+"',phone='"+phone+"',age='"+age+"',standered='"+standered+"',gender='"+gender+"' WHERE s_id='"+s_id+"'"
              res=db.update(qry)
     else:
-         qry="UPDATE student SET name='"+name+"',phone='"+phone+"',age='"+age+"',standered='"+standered+"' WHERE s_id='"+s_id+"'"
+         qry="UPDATE student SET name='"+name+"',phone='"+phone+"',age='"+age+"',standered='"+standered+"',gender='"+gender+"' WHERE s_id='"+s_id+"'"
          res=db.update(qry)
     return '''<script>alert ("Student Edited Successfully ");window.location='/viewstudent'</script>'''
 
@@ -789,10 +846,11 @@ def viewteachers():
     else:
         return render_template("Parent/View Teachers2.html",data=res)
 
-@app.route("/par_chat_teacher/<uid>")
-def par_chat_teacher(uid):
+@app.route("/par_chat_teacher/<uid>/<name>")
+def par_chat_teacher(uid, name):
     session["seluid"]=uid
-    return render_template('Parent/chat_teacher.html', toid=uid)
+    session["selname"]=name
+    return render_template('Parent/chat_teacher.html', toid=uid, name=name)
    
 
 
@@ -810,11 +868,12 @@ def par_chat_teacher_chk():
 @app.route("/par_chat_teacher_post",methods=['POST'])
 def par_chat_teacher_post():
     id=str(session["seluid"])
+    name=str(session["selname"])
     ta=request.form["ta"]
     qry="insert into chat(msg,date,form_id,to_id) values('"+ta+"',CURDATE(),'"+str(session['log_id'])+"','"+id+"')"
     d=Db()
     d.insert(qry)
-    return render_template('Parent/chat_teacher.html', toid=id)
+    return render_template('Parent/chat_teacher.html', toid=id, name=name)
     
 
 
@@ -1181,7 +1240,7 @@ def editexam_question():
 @app.route('/viewstudent_teacher')
 def viewStudentTeacher():
     db=Db()
-    qry="SELECT * FROM student"
+    qry="SELECT student.*,parents.name AS p_name,parents.phone AS p_phone FROM student INNER JOIN parents ON student.p_id=parents.log_id"
     res = db.select(qry)
     if str(session["log_id"])=="0":
         return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
@@ -1190,42 +1249,174 @@ def viewStudentTeacher():
 
 
 
+@app.route("/teacher_chat_parent/<uid>/<name>")
+def techer_chat_parent(uid, name):
+    session["selpid"]=uid
+    session["selpname"]=name
+    return render_template('Teacher/chat_parent.html', toid=uid, name=name)
+   
+
+
+@app.route("/teacher_chat_parent_chk",methods=['post'])        # refresh messages chatlist
+def teacher_chat_parent_chk():
+    uid=request.form['idd']
+    qry = "select date,msg,form_id from chat where (form_id='" + str(
+        session['log_id']) + "' and to_id='" + uid + "') or ((form_id='" + uid + "' and to_id='" + str(
+        session['log_id']) + "')) order by chat_id desc"
+    c = Db()
+    res = c.select(qry)
+    return jsonify(res)
+
+
+@app.route("/teacher_chat_parent_post",methods=['POST'])
+def par_chat_parent_post():
+    id=str(session["selpid"])
+    name=str(session["selpname"])
+    ta=request.form["ta"]
+    qry="insert into chat(msg,date,form_id,to_id) values('"+ta+"',CURDATE(),'"+str(session['log_id'])+"','"+id+"')"
+    d=Db()
+    d.insert(qry)
+    return render_template('Teacher/chat_parent.html', toid=id, name=name)
+    
+
+
+
+
 @app.route('/viewperfomanceteacher/<id>')
 def viewperfomance_teacher(id):
     db=Db()
+    dt=datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+
+    ####        puzzle result
     qry="SELECT COUNT(`pr_id`)FROM `puzzle_result` WHERE `s_id`='"+id+"'"
     total_pr=db.selectOne(qry)
     qry1="SELECT COUNT(`pr_id`)FROM `puzzle_result` WHERE `s_id`='"+id+"' AND result='pass'"
     mark_pr=db.selectOne(qry1)
+
+    pr_stat=['pass', 'fail']
+    pr_score=[]
+    pr_score.append(int(mark_pr['COUNT(`pr_id`)']))                                         # pass
+    pr_score.append(int(total_pr['COUNT(`pr_id`)']) - int(mark_pr['COUNT(`pr_id`)']))       # fail
+    pr_filename=dt+"_pr.png"
+    pr_chart=piechart(pr_stat, pr_score, pr_filename)
+
+    ####        puzzle  result end
+    ################################ question result
 
     qry2="SELECT COUNT(`qr_id`) FROM `question_result` WHERE `st_id`='"+id+"'"
     total_qr=db.selectOne(qry2)
     qry3="SELECT COUNT(`qr_id`) FROM `question_result` WHERE `st_id`='"+id+"' AND result='1'"
     mark_qr=db.selectOne(qry3)
 
+    qr_stat=['pass', 'fail']
+    qr_score=[]
+    qr_score.append(int(mark_qr['COUNT(`qr_id`)']))                                         # pass
+    qr_score.append(int(total_qr['COUNT(`qr_id`)']) - int(mark_qr['COUNT(`qr_id`)']))       # fail
+    qr_filename=dt+"_qr.png"
+    qr_chart=piechart(qr_stat, qr_score, qr_filename)
+
+    ####        question result end
+    #########     Numerical result
+
     qry4="SELECT COUNT(`nr_id`) FROM  `numerical_result` WHERE `st_id`='"+id+"'"
     total_nr=db.selectOne(qry4)
     qry5="SELECT COUNT(`nr_id`) FROM  `numerical_result` WHERE `st_id`='"+id+"'AND result='pass'"
     mark_nr=db.selectOne(qry5)
 
+    nr_stat=['pass', 'fail']
+    nr_score=[]
+    nr_score.append(int(mark_nr['COUNT(`nr_id`)']))                                         # pass
+    nr_score.append(int(total_nr['COUNT(`nr_id`)']) - int(mark_nr['COUNT(`nr_id`)']))       # fail
+    nr_filename=dt+"_nr.png"
+    nr_chart=piechart(nr_stat, nr_score, nr_filename)
+                     #########     Numerical result End
+                      #########     Object result
     qry6="SELECT COUNT(`or_id`) FROM `object_result` WHERE `st_id`='"+id+"'"
     total_or=db.selectOne(qry6)
     qry7="SELECT COUNT(`or_id`) FROM `object_result` WHERE `st_id`='"+id+"' AND result='pass'"
     mark_or=db.selectOne(qry7)
+
+    or_stat=['pass', 'fail']
+    or_score=[]
+    or_score.append(int(mark_or['COUNT(`or_id`)']))                                         # pass
+    or_score.append(int(total_or['COUNT(`or_id`)']) - int(mark_or['COUNT(`or_id`)']))       # fail
+    or_filename=dt+"_or.png"
+    or_chart=piechart(or_stat, or_score, or_filename)
+             #########     Object  result End
 
     qry8="SELECT COUNT(`wr_id`) FROM `word_result` WHERE `st_id`='"+id+"'"
     total_wr=db.selectOne(qry8)
     qry9="SELECT COUNT(`wr_id`) FROM `word_result` WHERE `st_id`='"+id+"' AND result='yes'"
     mark_wr=db.selectOne(qry9)
 
+    wr_stat=['pass', 'fail']
+    wr_score=[]
+    wr_score.append(int(mark_wr['COUNT(`wr_id`)']))                                         # pass
+    wr_score.append(int(total_wr['COUNT(`wr_id`)']) - int(mark_wr['COUNT(`wr_id`)']))       # fail
+    wr_filename=dt+"_wr.png"
+    wr_chart=piechart(wr_stat, wr_score, wr_filename)
+
     qry10="SELECT COUNT(`hw_id`) FROM `handwriting`WHERE `st_id`='"+id+"'"
     total_hw=db.selectOne(qry10)
     qry11="SELECT COUNT(`hw_id`) FROM `handwriting` WHERE `st_id`='"+id+"' AND result='1'"
     mark_hw=db.selectOne(qry10)
+
+    hw_stat=['pass', 'fail']
+    hw_score=[]
+    hw_score.append(int(mark_hw['COUNT(`hw_id`)']))                                         # pass
+    hw_score.append(int(total_hw['COUNT(`hw_id`)']) - int(mark_hw['COUNT(`hw_id`)']))       # fail
+    hw_filename=dt+"_hw.png"
+    hw_chart=piechart(hw_stat, hw_score, hw_filename)
+
     if str(session["log_id"])=="0":
         return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
     else:
-        return render_template("Teacher/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
+        return render_template("Teacher/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr, pr_chart=pr_chart ,total_qr=total_qr,mark_qr=mark_qr, qr_chart=qr_chart ,total_nr=total_nr,mark_nr=mark_nr,nr_chart=nr_chart,total_or=total_or,mark_or=mark_or,or_chart=or_chart,total_wr=total_wr,mark_wr=mark_wr,wr_chart=wr_chart,total_hw=total_hw,mark_hw=mark_hw,hw_chart=hw_chart)
+
+
+# @app.route('/viewperfomanceteacher/<id>')
+# def viewperfomance_teacher(id):
+#     db=Db()
+#     qry="SELECT COUNT(`pr_id`)FROM `puzzle_result` WHERE `s_id`='"+id+"'"
+#     total_pr=db.selectOne(qry)
+#     qry1="SELECT COUNT(`pr_id`)FROM `puzzle_result` WHERE `s_id`='"+id+"' AND result='pass'"
+#     mark_pr=db.selectOne(qry1)
+
+    
+
+#     qry2="SELECT COUNT(`qr_id`) FROM `question_result` WHERE `st_id`='"+id+"'"
+#     total_qr=db.selectOne(qry2)
+#     qry3="SELECT COUNT(`qr_id`) FROM `question_result` WHERE `st_id`='"+id+"' AND result='1'"
+#     mark_qr=db.selectOne(qry3)
+
+#     qry4="SELECT COUNT(`nr_id`) FROM  `numerical_result` WHERE `st_id`='"+id+"'"
+#     total_nr=db.selectOne(qry4)
+#     qry5="SELECT COUNT(`nr_id`) FROM  `numerical_result` WHERE `st_id`='"+id+"'AND result='pass'"
+#     mark_nr=db.selectOne(qry5)
+
+#     qry6="SELECT COUNT(`or_id`) FROM `object_result` WHERE `st_id`='"+id+"'"
+#     total_or=db.selectOne(qry6)
+#     qry7="SELECT COUNT(`or_id`) FROM `object_result` WHERE `st_id`='"+id+"' AND result='pass'"
+#     mark_or=db.selectOne(qry7)
+
+#     qry8="SELECT COUNT(`wr_id`) FROM `word_result` WHERE `st_id`='"+id+"'"
+#     total_wr=db.selectOne(qry8)
+#     qry9="SELECT COUNT(`wr_id`) FROM `word_result` WHERE `st_id`='"+id+"' AND result='yes'"
+#     mark_wr=db.selectOne(qry9)
+
+#     qry10="SELECT COUNT(`hw_id`) FROM `handwriting`WHERE `st_id`='"+id+"'"
+#     total_hw=db.selectOne(qry10)
+#     qry11="SELECT COUNT(`hw_id`) FROM `handwriting` WHERE `st_id`='"+id+"' AND result='1'"
+#     mark_hw=db.selectOne(qry10)
+#     if str(session["log_id"])=="0":
+#         return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+#     else:
+#         return render_template("Teacher/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
+
+
+
+
 
 #-------------------------------------------------ANDRIOD-STUDENT--------------------------------------------------
 
@@ -1264,7 +1455,36 @@ def viewmaterial_student():
     else:
         return jsonify(status="ok",users=res)
 
+@app.route('/viewnumericalproblem_student', methods=['post'])
+def viewnumericalproblem_student():
+    db= Db()
+    qry="SELECT * FROM numerical_problem"
+    res=db.select(qry)
+    print(res)
+    if len(res)==0:
+            return jsonify(status="no")
+    else:
+        return jsonify(status="ok",users=res)
 
+
+@app.route('/addnumerical_mark',methods=['post'])
+def addnumerical_mark():
+    st_id=request.form['lid']
+    print(st_id)
+    nr_id=request.form['num_id']
+    status=request.form['status']
+    
+    db=Db()
+    qry="SELECT * FROM numerical_result WHERE st_id='"+st_id+"' and num_id='"+nr_id+"'"
+    res=db.selectOne(qry)
+    if res is None:
+        qry2="INSERT INTO `numerical_result` (st_id,num_id,result) VALUES ('"+st_id+"','"+nr_id+"','"+status+"')"
+        db.insert(qry2)
+        return jsonify(status="no")
+    else:
+        qry2="UPDATE numerical_result SET result='"+status+"' WHERE st_id='"+st_id+"' AND num_id='"+nr_id+"'"
+        db.update(qry2)
+        return jsonify(status="ok",users=res)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

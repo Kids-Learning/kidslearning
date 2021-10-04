@@ -1,13 +1,12 @@
-{% extends "Parent/parent_index.html"%}
+{% extends "Admin/admin_index.html"%}
 {% block body %}
-
 <body>
-	<h4 align="center">View Teachers </h4>
+	<h4 align="center">View Teachers Requests </h4>
 	<form action="/searchtechers" method="post">
     <table class="table align-items-center table-flush table-borderless" >
       <tbody>
     <tr>
-           <td colspan="9" align="right"><input type="text" name="search" class="form-control"/></td><td><input type="submit" value="Search" class="btn btn-success"/></td>
+           <td colspan="7" align="right"><input type="text" name="search" class="form-control"/></td><td><input type="submit" value="Search" class="btn btn-warning"/></td>
 
     </tr>
     <tr align="center">
@@ -18,7 +17,7 @@
       <td>Photo</td>
       <td>Qualification</td>
       <td>Contact</td>
-      
+      <td>Remove</td>
     </tr>
     {% for i in data %}
     <tr align="center">
@@ -30,7 +29,8 @@
       <td>{{ i['qualification'] }}</td>
       <td>Phone:- {{i['phone']}}<br>
 		Email:-{{i['email']}}</td>
-    <td><a href="/par_chat_teacher/{{ i['log_id'] }}/{{ i['name'] }}" class="btn btn-warning">Chat</a></td>
+        <td><a href="/approve_reject_t/{{i['log_id']}}/teacher/{{i['email']}}" class="btn btn-warning">Approve</a></td>
+        <td><a href="/approve_reject_t/{{i['log_id']}}/rejectedteacher/{{i['email']}}" class="btn btn-warning">Reject</a></td>
     </tr>
   {% endfor %}
   </tbody>

@@ -12,6 +12,8 @@
     <td width="132">Photo</td>
     <td width="46">Gender</td>
     <td width="81">Standered</td>
+    <td width="46">Parent Name</td>
+    <td width="46">Phone Number</td>
     <td width="99">&nbsp;</td>
   </tr>
     {% for i in data %}
@@ -23,8 +25,12 @@
     <td><img src="{{ i['photo'] }}" width="132" height="96" /></td></td>
     <td>{{ i['gender'] }}</td>
     <td>{{ i['standered'] }}</td>
+    <td>{{ i['p_name'] }}</td>
+    <td>{{ i['p_phone'] }}</td>
     <td width="126">
-    <a href="/viewperfomanceteacher/{{ i["log_id"] }}" class="btn btn-info">View Perfomance</a></td>
+    <a href="/viewperfomanceteacher/{{ i["log_id"] }}" class="btn btn-info">View Perfomance</a><br><br>
+    <a href="/teacher_chat_parent/{{ i['p_id'] }}/{{ i['p_name'] }}" class="btn btn-info">chat with parent</a></td></td>
+
   </tr>
     {% endfor %}
 </table>

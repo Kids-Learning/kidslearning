@@ -1,15 +1,9 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Sent replay</title>
-</head>
-
+{% extends "Admin/admin_index.html"%}
+{% block body %}
 <body>
-	<h3 align="center">Sent Replay</h3>
+	<h4 align="center">Sent Replay</h4>
 		<form action="/sentreply_post" method="post">
-            <table width="200" border="1"
-					 align="center">
+      <table class="table align-items-center table-flush table-borderless" >
   <tbody>
     <tr><input type="hidden" name="c_id" value="{{ data['c_id'] }}"/>
       <td>Complaint</td>
@@ -17,14 +11,14 @@
     </tr>
     <tr>
       <td>Reply</td>
-      <td><input type="text" name="reply"/></td>
+      <td><input type="text" name="reply" class="form-control" /></td>
     </tr>
     <tr>
-      <td colspan="2" align="center"><input type="submit" value="Sent"/></td>
+      <td colspan="2" align="center"><input type="submit" class="btn btn-primary"value="Sent"/></td>
     </tr>
   </tbody>
 </table>
 
 		</form>
 </body>
-</html>
+{% endblock %}
