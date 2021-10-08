@@ -1486,5 +1486,54 @@ def addnumerical_mark():
         db.update(qry2)
         return jsonify(status="ok",users=res)
 
+@app.route('/viewimagepuzzle_student',methods=['post'])
+def viewiamgepuzzle_student ():
+    db=Db()
+    qry="SELECT * FROM puzzle"
+    res=db.select(qry)
+    if len(res)==0:
+        return jsonify(status="no")
+    else:
+        return jsonify(status="ok",users=res)
+
+@app.route('/and_puzzleresults',methods=['post'])
+def puzzleresuts_student():
+    db= Db()
+    puz_id=request.form['puzzleid']
+    s_id=request.form['lid']
+    result=request.form['result']
+    time_taken= request.form['time']
+    qry="INSERT INTO puzzle_result (puz_id,s_id,result,time_taken)  VALUES('"+puz_id+"','"+s_id+"','"+result+"','"+time_taken+"')"
+    res=db.insert(qry)
+    if len(res)==0:
+        return jsonify(status="no")
+    else:
+        return jsonify(status="ok",users=res)
+
+
+@app.route('/view_acc_img',methods=['POST'])
+def ed_f_v():
+    # print("m")
+
+   # "\uploads\images\jigsaw\jigsaw_sliced\1 - arch.jpg"
+
+    import random
+    list = []
+    for i in range(1000):
+        r = random.randint(1, 16)
+        if r not in list: list.append(r)
+    abc = ""
+    for ii in list:
+        abc = abc + str(ii) + ","
+
+    # print(abc)
+
+    res = abc
+    if res is not None:
+        return jsonify(status='ok',fname=res)
+    else:
+        return jsonify(status='no')
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0',debug=True)

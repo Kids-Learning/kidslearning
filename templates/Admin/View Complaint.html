@@ -30,7 +30,7 @@
       <td>{{ loop.index }}</td>
       <td>{{ i["name"] }}</td>
       <td>{{ i["date"] }}</td>
-      <td> <img src="{{ i["photo"]}}" width="132" height="96" /></td>
+      <td> <img src="{{ i["photo"]}}" width="100" height="100" /></td>
       <td>{{ i["complaint"] }}</td>
         {% if i["reply"]=="pending" %}
       <td><a href="/sentreplay/{{ i['c_id'] }}" class="btn btn-success">Replay</a></td>

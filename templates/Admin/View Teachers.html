@@ -1,7 +1,7 @@
 {% extends "Admin/admin_index.html"%}
 {% block body %}
 <body>
-	<h4 align="center">View Teachers Requests </h4>
+	<h4 align="center">View Teachers  </h4>
 	<form action="/searchtechers" method="post">
     <table class="table align-items-center table-flush table-borderless" >
       <tbody>
@@ -25,7 +25,7 @@
       <td>{{ i['name'] }}</td>
       <td>{{ i['dob'] }}</td>
       <td>{{ i['gender'] }}</td>
-      <td> <img src="{{ i['photo'] }}" width="132" height="96" /></td>
+      <td> <img src="{{ i['photo'] }}" width="100" height="100" /></td>
       <td>{{ i['qualification'] }}</td>
       <td>Phone:- {{i['phone']}}<br>
 		Email:-{{i['email']}}</td>
