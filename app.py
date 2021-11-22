@@ -1535,5 +1535,44 @@ def ed_f_v():
         return jsonify(status='no')
 
 
+@app.route('/viewexam_student',methods=['POST'])
+def viewexam_student():
+    db=Db()
+    qry="SELECT exam.*, teachers.name FROM exam INNER JOIN teachers ON `teachers`.`log_id`=exam.t_id"
+    res=db.select(qry)
+    if len(res)==0:
+        return jsonify(status="no")
+    else:
+        return jsonify(status="ok",users=res)
+
+@app.route('/loadquestions_student' ,methods=['post'])
+def loadquestions_student():
+    ex_id=request.form['ex_id']
+    db=Db()
+    qry="SELECT * FROM `exam_question` WHERE ex_id='"+ex_id+"'"
+    res=db.select(qry)
+    if len(res)==0:
+        return jsonify(status="no")
+    else:
+        return jsonify(status="ok", ln=len(res),users=res)
+
+@app.route('/markinsert_student', methods=['post'])
+def markinsert_student():
+    db=Db()
+    mark=request.form['mark']
+    ex_id=request.form['ex_id']
+    lid=request.form['lid']
+    qry = "INSERT INTO  `exam_result`(`ex_id`,`s_id`,`result`,`date`)VALUES ('"+ex_id+"','"+lid+"','"+mark+"',CURDATE())"
+    res= db.insert(qry)
+    return jsonify(status="ok")
+
+@app.route('/viewwords_student',methods=['POST'])
+def viewwords_student():
+    db=Db()
+    qry= "SELECT * FROM word"
+    res=db.select(qry)
+    return jsonify(status="ok", data=res)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True)
