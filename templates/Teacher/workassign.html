@@ -1,0 +1,22 @@
+{% extends "Teacher/teacher_index.html"%}
+{% block body %}
+<body>
+<form action="/assignwork_post" method="post">
+<table class="table align-items-center table-flush table-borderless" width="424" height="169" border="1">
+  <tr>
+    <td width="68">Work</td>
+    <td width="340"><label for="work"></label>
+      <textarea name="work" id="work" cols="45" rows="5"></textarea></td>
+  </tr>
+  <tr>
+    <td>Date of Submission</td>
+    <td><label for="date"></label>
+      <input type="date" name="dateofsub" id="dateofsub" /></td>
+  </tr>
+  <tr  align="center">
+    <td height="30" colspan="2"> <input name="save" type="submit" value="Save" /></td>
+  </tr>
+</table>
+</form>
+</body>
+{% endblock %}

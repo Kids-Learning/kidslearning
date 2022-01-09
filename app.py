@@ -6,6 +6,7 @@ import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+
 app = Flask(__name__)
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT' #session key
 static_path = "C:\\Users\\user\\Desktop\\project\\Kids Learning\\static\\"
@@ -103,7 +104,9 @@ def login_post():
 def parent_signup():
     return render_template("Parent Signup_2.html")
 
-
+@app.route('/ahome')
+def ahome():
+    return render_template("")
 @app.route('/parentsignup_post', methods=['post'])
 def parentsignup_post():
     db = Db()
@@ -165,7 +168,7 @@ def teachersigup_post():
 # @app.route('/admin_index')
 # def admin_index():
 #     db= Db()
-#     qry="SELECT * FROM login WHERE type='admin'"
+#     qry="SELECT * FROM login WHERE type='admin'"  
 #     res=db.select(qry)
 #     print(res)
 #     return render_template("Admin/admin_index.html", i=res)
@@ -306,7 +309,7 @@ def view_students(id):
 @app.route('/viewteachers')
 def view_teachers():
     db = Db()
-    qry = "SELECT * FROM teachers "
+    qry = "SELECT * FROM `teachers` INNER JOIN `login` ON `login`.log_id = `teachers`.log_id WHERE login.type='teacher'"
     res = db.select(qry)
     if str(session["log_id"])=="0":
         return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
@@ -1414,6 +1417,30 @@ def viewperfomance_teacher(id):
 #     else:
 #         return render_template("Teacher/ViewPerfomance.html",total_pr=total_pr,mark_pr=mark_pr,total_qr=total_qr,mark_qr=mark_qr,total_nr=total_nr,mark_nr=mark_nr,total_or=total_or,mark_or=mark_or,total_wr=total_wr,mark_wr=mark_wr,total_hw=total_hw,mark_hw=mark_hw)
 
+@app.route('/assign_work/<id>')
+def assign_work(id):
+    if str(session["log_id"])=="0":
+        return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
+    else:
+        return render_template("Teacher/workassign.html")
+
+@app.route('/assignwork_post',methods=['post'])
+def assign_work_post():
+    db=Db()
+    work=request.form['work']
+    dateofsub= request.form['dateofsub']
+    qry="INSERT INTO WORK (work,last_date,status) VALUES ('"+work+"','"+dateofsub+"','Pending') "
+    res= db.insert(qry)
+    return '''<script>alert ("Work Assigned  Successfully ");window.location='/viewwork'</script>'''
+
+@app.route('/viewwork/<id>')
+def viewwork(id):
+    
+    db=Db()
+    qry="SELECT * FROM work WHERE s_id='"+id+"'"
+    res= db.select(qry)
+    return render_template("Teacher/viewworks.html",data=res)
+
 
 
 
@@ -1448,12 +1475,18 @@ def viewstudent_android():
 @app.route('/viewmaterial_student',methods=['post'])
 def viewmaterial_student():
     db=Db()
+    ls=[]
     qry="SELECT * FROM study_meterials INNER JOIN teachers ON `teachers`.`log_id`=study_meterials.`t_id`"
     res=db.select(qry)
+    for i in res:
+        val=i['file']
+        m=str(val)
+        x=m.split("/")
+        ls.append({"subject":i['subject'],"file":x[3],"date":i['date'],"name":i['name']})
     if len(res)==0:
         return jsonify(status="no")
     else:
-        return jsonify(status="ok",users=res)
+        return jsonify(status="ok",users=ls)
 
 @app.route('/viewnumericalproblem_student', methods=['post'])
 def viewnumericalproblem_student():
@@ -1500,12 +1533,14 @@ def viewiamgepuzzle_student ():
 def puzzleresuts_student():
     db= Db()
     puz_id=request.form['puzzleid']
+    print(puz_id)
     s_id=request.form['lid']
     result=request.form['result']
     time_taken= request.form['time']
     qry="INSERT INTO puzzle_result (puz_id,s_id,result,time_taken)  VALUES('"+puz_id+"','"+s_id+"','"+result+"','"+time_taken+"')"
     res=db.insert(qry)
-    if len(res)==0:
+    print(res)
+    if (res)==0:
         return jsonify(status="no")
     else:
         return jsonify(status="ok",users=res)
@@ -1572,6 +1607,233 @@ def viewwords_student():
     qry= "SELECT * FROM word"
     res=db.select(qry)
     return jsonify(status="ok", data=res)
+
+@app.route('/addword_result', methods=['post'])
+def addword_result():
+    db=Db()
+    w_id=request.form['wid']
+    s_id=request.form['sid']
+
+    result=request.form['status']
+    qry="INSERT INTO `word_result`(`w_id`,`st_id`,`date`,`result`)VALUES('"+w_id+"','"+s_id+"',CURDATE(),'"+result+"')"
+    res= db.insert(qry)
+    return jsonify(status="ok")
+
+@app.route('/loadquiz_student', methods=['post'])
+def loadquiz_student():
+    
+    db=Db()
+    qry="SELECT * FROM question"
+    res=db.select(qry)
+    print(res)
+    if len(res)==0:
+        return jsonify(status="no")
+    else:
+        return jsonify(status="ok",users=res, ln=len(res))
+
+@app.route('/markquiz_student',methods=['POST'])
+def markquiz_student():
+    db=Db()
+    result=request.form['mark']
+    q_id=request.form['q_id']
+    lid=request.form['lid']
+    # date=request.form['date']
+    qry="INSERT INTO `question_result` (q_id,st_id,result,date) VALUES ('"+q_id+"','"+lid+"','"+result+"',curdate())"
+    res= db.insert(qry)
+    return jsonify(status="ok")
+
+@app.route('/viewwork_student',methods=['POST'])
+def viewwork_student():
+    db=Db()
+    log_id=request.form['lid']
+    qry= "SELECT * FROM work WHERE s_id='"+log_id+"'"
+    res=db.select(qry)
+    print(res)
+    return jsonify(status="ok", users=res)
+
+@app.route('/addwork_student',methods=['POST'])
+def addwork_student():
+    db=Db()
+    log_id=request.form['lid']
+    file = request.form["file"]
+    wid=request.form['wid']
+
+    import time,datetime
+    from encodings.base64_codec import base64_decode
+    import base64
+
+
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    print(timestr)
+    a = base64.b64decode(file)
+    fh = open("static/work/" + timestr + ".jpg", "wb")
+    path = "/static/work/" + timestr + ".jpg"
+    fh.write(a)
+    fh.close()  
+    qry="UPDATE WORK SET file='"+path+"',status='Submitted',dateofsubmit=curdate() WHERE s_id='"+log_id+"' AND w_id='"+wid+"'"
+    res= db.insert(qry)
+
+    
+    return jsonify(status="ok")
+
+@app.route('/AndStoryRetrieve', methods=['POST'])
+def AndStoryRetrieve():
+    db = Db()
+    qry = "SELECT  * FROM rhymes"
+    res = db.select(qry)
+    return jsonify(status="ok", res=res)
+
+
+@app.route('/AndRetrieveFileName', methods=['POST'])
+def AndRetrieveFileName():
+    id = request.form["fid"]
+    from docx import Document
+    db = Db()
+    qry = "select file from rhymes where r_id = '" + id + "'"
+    res = db.selectOne(qry)
+    aa=res["file"].split("/")
+    filepath = "C:\\Users\\user\\Desktop\\project\\Kids Learning\\static\\rhymes\\" + aa[3]
+    doc = Document(filepath)
+    docum = ""
+    for para in doc.paragraphs:
+        docum = docum + "\n" + para.text
+
+    return jsonify(status="ok", doc=docum)
+
+@app.route('/addhandwriting_student',methods=['POST'])
+def addhandwriting_student():
+    db=Db()
+    import base64
+    # st_id=request.form['lid']
+    # result=request.form['result']
+    # date=request.form['date']
+    # qry="INSERT INTO `handwriting`(`st_id`,`result`,`date`) VALUES ('"+st_id+"','"+result+"',curdate())"
+    # res= db.insert(qry)
+    # return jsonify(status="ok")
+    image = request.form['image']
+    a = base64.b64decode(image)
+    # timestr = time.strftime("%Y%m%d%H%M%S")
+    # fname = "test-"+timestr+".bmp"
+
+    fh = open ("C:\\Users\\user\\Desktop\\project\\Kids Learning\\static\\writings\\test.bmp", "wb")
+    fh.write(a)
+    fh.close()
+    import scan 
+    s1 = scan.predict()
+    print("output - ", s1)
+    res1 = {}
+    if s1:
+        if s1 == 3349:
+            s = u'à´•'
+        elif s1 == 3333:
+            s = u'à´…'
+        elif s1 == 3334:
+            s = u'à´†'
+        elif s1 == 3335:
+            s = u'à´‡'
+        elif s1 == 3337:
+            s = u'à´‰'
+        elif s1 == 3342:
+            s = u'à´Ž'
+        elif s1 == 3343:
+            s = u'à´'
+        elif s1 == 3346:
+            s = u'à´’'
+        elif s1 == 3349:
+            s = u'à´•'
+        elif s1 == 3350:
+            s = u'à´–'
+        elif s1 == 3351:
+            s = u'à´—'
+        elif s1 == 3352:
+            s = u'à´˜'
+        elif s1 == 3353:
+            s = u'à´™'
+        elif s1 == 3354:
+            s = u'à´š'
+        elif s1 == 3355:
+            s = u'à´›'
+        elif s1 == 3356:
+            s = u'à´œ'
+        elif s1 == 3357:
+            s = u'à´'
+        elif s1 == 3358:
+            s = u'à´ž'
+        elif s1 == 3359:
+            s = u'à´Ÿ'
+        elif s1 == 3360:
+            s = u'à´ '
+        elif s1 == 3361:
+            s = u'à´¡'
+        elif s1 == 3362:
+            s = u'à´¢'
+        elif s1 == 3363:
+            s = u'à´£'
+        elif s1 == 3364:
+            s = u'à´¤'
+        elif s1 == 3365:
+            s = u'à´¥'
+        elif s1 == 3366:
+            s = u'à´¦'
+        elif s1 == 3367:
+            s = u'à´§'
+        elif s1 == 3368:
+            s = u'à´¨'
+        elif s1 == 3370:
+            s = u'à´ª'
+        elif s1 == 3371:
+            s = u'à´«'
+        elif s1 == 3372:
+            s = u'à´¬'
+        elif s1 == 3373:
+            s = u'à´­'
+        elif s1 == 3374:
+            s = u'à´®'
+        elif s1 == 3375:
+            s = u'à´¯'
+        elif s1 == 3376:
+            s = u'à´°'
+        elif s1 == 3377:
+            s = u'à´±'
+        elif s1 == 3378:
+            s = u'à´²'
+        elif s1 == 3379:
+            s = u'à´³'
+        elif s1 == 3380:
+            s = u'à´´'
+        elif s1 == 3381:
+            s = u'à´µ'
+        elif s1 == 3382:
+            s = u'à´¶'
+        elif s1 == 3383:
+            s = u'à´·'
+        elif s1 == 3384:
+            s = u'à´¸'
+        elif s1 == 3385:
+            s = u'à´¹'
+        else:
+            s = '[]'
+    if s:
+      
+        return jsonify(status="ok",output=s,code=s1)
+    else:
+
+        return jsonify(status="no")
+
+
+@app.route('/adddrawing_student',methods=['POST'])
+def adddrawing_student():
+    db=Db()
+    s_id=request.form['lid']
+    date=request.form['date']
+    file = request.form["file"]
+    file.save(static_path + "drawing\\" + file.filename)
+    path = "/static/drawing/" + file.filename
+    qry="INSERT INTO `drawing`  (`s_id`,`date`,`file`) VALUES ('"+s_id+"',curdate(),'"+path+"')"
+    res= db.insert(qry)
+    return jsonify(status="ok")
+
+
 
 
 if __name__ == '__main__':

@@ -72,16 +72,14 @@
                                         </div>
 
                                     </div> <br>
+
                                     <div class="form-group">
                                         <label for="Phone" class="sr-only">Phone</label>
                                         <div class="position-relative has-icon-right">
-                                            <input type="text" id="exampleInputEmailId" name="phone"
-                                                class="form-control input-shadow" placeholder="Enter Your Phone Number" maxlength="10" required  />
-                                            <div class="form-control-position">
-                                                <i class="icon-phone"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                                            <input type="text" id="exampleInputEmailId" name="phone" pattern="[6-9]{1}[0-9]{9}"
+                                                class="form-control input-shadow" placeholder="Enter Your Phone Number" maxlength="10" minlength="10" title="phone number must be 10 Digits Without Country Code&& Mustbe a valid phone number" required>
+                                    </div></div>
+                                
                                     <div class="form-group">
                                         <label for="EmailId" class="sr-only">Email ID</label>
                                         <div class="position-relative has-icon-right">
@@ -97,7 +95,9 @@
                                             <div class="form-group">
                                                 <label for="exampleInputEmailId" class="sr-only">Date of Birth</label>
                                                 <div class="position-relative has-icon-right">
-                                                    <input placeholder="Date of Birth" name="dateofbirth" font-size="small"  class="form-control" type="text" onfocus="(this.type='date')" id="date">
+                                                    <input placeholder="Date of Birth"   onkeyup="cc()" name="dateofbirth"  font-size="small"  required class="form-control" type="date" onfocus="(this.type='date')" id="dd">
+                      
+                                                  <label id="lab"></label>
                                                     <div class="form-control-position">
                                                         <i class="icon-calendar"></i>
                                                     </div>
@@ -118,7 +118,7 @@
                                                 <label for="Photo" class="sr-only">Photo</label>
                                                 <div class="position-relative has-icon-right">
         
-                                                    <input type="file" accept="image/png, image/jpeg" name="photo"
+                                                    <input type="file" accept="image/png, image/jpeg" name="photo" required
                                                         class="form-control" id="real-file" hidden="hidden" />
                                                     <button type="button" class="form-control" id="custom-button">Choose
                                                         Image</button>
@@ -158,7 +158,7 @@
 			     </div>
 			    </div> -->
 
-                                            <input type="submit" value="Sign up"
+                                            <input type="submit" value="Sign up" id="btn"
                                                 class="btn btn-light btn-block waves-effect waves-light" />
 
 
@@ -234,7 +234,41 @@
 
     <!-- Custom scripts -->
     <script src="/static/assets/js/app-script.js"></script>
+<script>
 
+
+function cc()
+{
+    var today = new Date();
+    var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+today = mm + '/' + dd + '/' + yyyy;
+var arr = new Array();
+var born = document.getElementById("dd").value;
+arr=born.split("-");
+var cy=arr[0]
+var def=yyyy-cy;
+// document.getElementById('lab').innerHTML = def;
+if(def<21)
+{
+    lab.style.color = "red";
+document.getElementById('lab').innerHTML = 'not accepted';
+document.getElementById("btn").disabled = true; 
+}
+else
+{
+    document.getElementById('lab').innerHTML = ' ';
+    document.getElementById("btn").disabled = false; 
+     
+}
+    
+}
+
+
+
+    </script>
     <!--Photo,Date  Js & CSS  -->
     <script>
         const realFileBtn = document.getElementById("real-file");

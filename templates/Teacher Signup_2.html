@@ -75,9 +75,9 @@
                                     <div class="form-group">
                                         <label for="Phone" class="sr-only">Phone</label>
                                         <div class="position-relative has-icon-right">
-                                            <input type="text" id="exampleInputEmailId" name="phone"
+                                            <input type="text" id="exampleInputEmailId" name="phone" pattern="[6-9]{1}[0-9]{9}"
                                                 class="form-control input-shadow" placeholder="Enter Your Phone Number"
-                                                required />
+                                                maxlength="10"  minlength="10" required />
                                             <div class="form-control-position">
                                                 <i class="icon-phone"></i>
                                             </div>
@@ -99,7 +99,7 @@
                                         <label for="exampleInputEmailId" class="sr-only">Date of Birth</label>
                                         <div class="position-relative has-icon-right">
                                             <input placeholder="Date of Birth" name="dateofbirth" font-size="small"
-                                                class="form-control" type="text" onfocus="(this.type='date')" id="date">
+                                                class="form-control" type="text" required onfocus="(this.type='date')" id="date">
                                             <div class="form-control-position">
                                                 <i class="icon-calendar"></i>
                                             </div>
@@ -132,7 +132,7 @@
                                         <div class="position-relative has-icon-right">
 
                                             <input type="file" accept="image/png, image/jpeg" name="photo"
-                                                class="form-control" id="real-file" hidden="hidden" />
+                                                class="form-control" id="real-file" hidden="hidden"  required/>
                                             <button type="button" class="form-control" id="custom-button">Choose
                                                 Image</button>
                                             <span id="custom-text">No file chosen, yet.</span>
@@ -145,7 +145,7 @@
                                                 <label for="exampleInputPassword" class="sr-only">Password</label>
                                                 <div class="position-relative has-icon-right">
                                                     <input type="password" name="password" id="password"
-                                                        class="form-control input-shadow" placeholder="Enter Password">
+                                                        class="form-control input-shadow" placeholder="Enter Password" required/>
                                                     <div class="form-control-position">
                                                         <i class="icon-lock"></i>
                                                     </div>
@@ -156,7 +156,7 @@
                                                 <label for="confirmpassword" class="sr-only">Confirm Password</label>
                                                 <div class="position-relative has-icon-right">
                                                     <input type="password" id="confirm_password"
-                                                        class="form-control input-shadow"
+                                                        class="form-control input-shadow" required
                                                         placeholder="Confirm Password">
                                                     <div class="form-control-position">
                                                         <i class="icon-lock"></i>

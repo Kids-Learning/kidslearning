@@ -1,0 +1,28 @@
+{% extends "Teacher/teacher_index.html"%}
+{% block body %}
+
+<body>
+<table class="table align-items-center table-flush table-borderless" width="575" height="158" border="1">
+  <tr>
+    <td>Sl.No</td>
+    <td>Work</td>
+    <td>Assigned On</td>
+    <td>Submitted On</td>
+    <td> Status</td>
+    <td>#</td>
+  </tr>
+  {% for i in data %}
+  <tr>
+    <td>{{ loop.index }}</td>
+    <td>{{ i["work"] }}</td>
+    <td>{{ i["last_date"] }}</td>
+    <td>{{ i["dateofsubmit"] }}</td>
+    <td>{{ i["status"] }}</td>
+    <td width="63" align="center"><a href="{{ i["file"] }}" download class="btn btn-primary">Download</a></td>
+  </tr>
+  {% endfor %}
+</table>
+
+</body>
+{% endblock %}
+

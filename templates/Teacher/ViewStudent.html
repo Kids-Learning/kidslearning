@@ -29,8 +29,9 @@
     <td>{{ i['p_phone'] }}</td>
     <td width="126">
     <a href="/viewperfomanceteacher/{{ i["log_id"] }}" class="btn btn-info">View Perfomance</a><br><br>
-    <a href="/teacher_chat_parent/{{ i['p_id'] }}/{{ i['p_name'] }}" class="btn btn-info">chat with parent</a></td></td>
-
+    <a href="/teacher_chat_parent/{{ i['p_id'] }}/{{ i['p_name'] }}" class="btn btn-info">chat with parent</a><br><br>
+    <a href="/assign_work/{{ i["log_id"] }}" class="btn btn-info">Assign Work</a><br><br>
+    <a href="/viewwork/{{ i["log_id"] }}" class="btn btn-info">View Work</a><br><br></td></td>
   </tr>
     {% endfor %}
 </table>
