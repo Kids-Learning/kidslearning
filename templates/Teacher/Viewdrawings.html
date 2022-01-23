@@ -1,0 +1,21 @@
+{% extends "Teacher/teacher_index.html"%}
+{% block body %}
+
+<body>
+   <h4 align="center">View Student</h4>
+   <table class="table align-items-center table-flush table-borderless" >
+    <tr align="center">
+    <td width="84" height="36">Sl No</td>
+    <td width="46">Image</td>
+    <td width="99">&nbsp;</td>
+  </tr>
+    {% for i in data %}
+  <tr align="center">
+    <td>{{ loop.index }}</td>
+     <td><img src="{{ i['file'] }}" width="250 " height="250" /></td></td>
+    <td width="126">
+  </tr>
+    {% endfor %}
+</table>
+</body>
+{% endblock %}

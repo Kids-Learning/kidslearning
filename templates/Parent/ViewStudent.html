@@ -25,9 +25,12 @@
     <td><img src="{{ i['photo'] }}" width="100" height="100" /></td></td>
     <td>{{ i['gender'] }}</td>
     <td>{{ i['standered'] }}</td>
-    <td width="126"><a href="/editstudent/{{ i["s_id"] }}" class="btn btn-warning">Edit</a><br><br>
+    <td width="126"><a href="/editstudent/{{ i["s_id"] }}" class="btn btn-warning">Edit</a>
     <a href="/deletestudent/{{ i["s_id"] }}" class="btn btn-danger">Delete</a><br><br>
-    <a href="/viewperfomance/{{ i["log_id"] }}" class="btn btn-info">View Perfomance</a></td>
+    <a href="/viewperfomance/{{ i["log_id"] }}" class="btn btn-info">View Perfomance</a><br><br>
+    <a href="/Viewemotion/{{ i["log_id"] }}" class="btn btn-info">View Emotion</a>
+    <a href="/viewreult_exam/{{ i["log_id"] }}" class="btn btn-info">View Exam Result</a></td>
+
   </tr>
     {% endfor %}
 </table>

@@ -1,0 +1,24 @@
+{% extends "Parent/parent_index.html"%}
+{% block body %}
+<body>
+
+    <table class="table align-items-center table-flush table-borderless" >
+        <tr>
+    <td width="59">Sl No</td>
+    <td width="59">Exam </td>
+    <td width="140">Emotion</td>
+    <td width="140">Count</td>
+  </tr>
+  {% for i in data %}
+  <tr>
+    <td>{{ loop.index }}</td>
+    <td>{{ i['subject'] }}</td>
+    <td>{{ i['emotion'] }}</td>
+    <td>{{ i['cnt'] }}</td>
+  </tr>
+    {% endfor %}
+</table>
+
+</body>
+
+{% endblock %}

@@ -4,6 +4,7 @@ from flask.globals import session
 from DBConnection import Db
 import smtplib, ssl
 from email.mime.text import MIMEText
+import numpy as np
 from email.mime.multipart import MIMEMultipart
 
 
@@ -18,10 +19,10 @@ def hello_world():
     session["log_id"]="0"
     return render_template("Login.html")
 
-@app.errorhandler(404)
-def page_not_found(e):
-    # note that we set the 404 status explicitly
-    return render_template('Login.html'), 404
+# @app.errorhandler(404)
+# def page_not_found(e):
+#     # note that we set the 404 status explicitly
+#     return render_template('Login.html'), 404
 
 
 
@@ -334,6 +335,10 @@ def searchteachers():
     qry = "SELECT * FROM teachers WHERE NAME LIKE  '%" + search + "%'"
     res = db.select(qry)
     return render_template("Admin/View Teachers.html", data=res)
+
+
+
+
 
 
 @app.route('/viewcomplaint')
@@ -980,7 +985,7 @@ def viewperfomance(id):
     qry10="SELECT COUNT(`hw_id`) FROM `handwriting`WHERE `st_id`='"+id+"'"
     total_hw=db.selectOne(qry10)
     qry11="SELECT COUNT(`hw_id`) FROM `handwriting` WHERE `st_id`='"+id+"' AND result='1'"
-    mark_hw=db.selectOne(qry10)
+    mark_hw=db.selectOne(qry11)
 
     hw_stat=['pass', 'fail']
     hw_score=[]
@@ -989,6 +994,8 @@ def viewperfomance(id):
     hw_filename=dt+"_hw.png"
     hw_chart=piechart(hw_stat, hw_score, hw_filename)
 
+
+    
 
     if str(session["log_id"])=="0":
         return '''<script>alert ("Invalid Access Please Login ");window.location='/'</script>'''
@@ -1572,8 +1579,10 @@ def ed_f_v():
 
 @app.route('/viewexam_student',methods=['POST'])
 def viewexam_student():
+
+    lid=request.form["lid"]
     db=Db()
-    qry="SELECT exam.*, teachers.name FROM exam INNER JOIN teachers ON `teachers`.`log_id`=exam.t_id"
+    qry="SELECT exam.*, teachers.name FROM exam INNER JOIN teachers ON `teachers`.`log_id`=exam.t_id   where `exam`.`ex_id` NOT IN (  SELECT `ex_id` FROM `exam_result` WHERE `s_id`='"+lid+"') and exam.date=curdate()"
     res=db.select(qry)
     if len(res)==0:
         return jsonify(status="no")
@@ -1586,11 +1595,14 @@ def loadquestions_student():
     db=Db()
     qry="SELECT * FROM `exam_question` WHERE ex_id='"+ex_id+"'"
     res=db.select(qry)
+
     if len(res)==0:
+        
         return jsonify(status="no")
     else:
+        
         return jsonify(status="ok", ln=len(res),users=res)
-
+       
 @app.route('/markinsert_student', methods=['post'])
 def markinsert_student():
     db=Db()
@@ -1704,7 +1716,6 @@ def AndRetrieveFileName():
 def addhandwriting_student():
     db=Db()
     import base64
-    # st_id=request.form['lid']
     # result=request.form['result']
     # date=request.form['date']
     # qry="INSERT INTO `handwriting`(`st_id`,`result`,`date`) VALUES ('"+st_id+"','"+result+"',curdate())"
@@ -1712,9 +1723,10 @@ def addhandwriting_student():
     # return jsonify(status="ok")
     image = request.form['image']
     a = base64.b64decode(image)
+    charcode=request.form['charcode']
     # timestr = time.strftime("%Y%m%d%H%M%S")
     # fname = "test-"+timestr+".bmp"
-
+    s=0
     fh = open ("C:\\Users\\user\\Desktop\\project\\Kids Learning\\static\\writings\\test.bmp", "wb")
     fh.write(a)
     fh.close()
@@ -1814,6 +1826,20 @@ def addhandwriting_student():
         else:
             s = '[]'
     if s:
+
+
+        print(s1,"===========",charcode)
+
+        if charcode==str(s1):
+            st_id=request.form['lid']
+            qry="INSERT INTO `handwriting`(`st_id`,`result`,`date`) VALUES ('"+st_id+"','1',curdate())"
+            res= db.insert(qry)
+
+        else:
+            st_id=request.form['lid']
+            qry="INSERT INTO `handwriting`(`st_id`,`result`,`date`) VALUES ('"+st_id+"','0',curdate())"
+            res= db.insert(qry)
+
       
         return jsonify(status="ok",output=s,code=s1)
     else:
@@ -1833,8 +1859,149 @@ def adddrawing_student():
     res= db.insert(qry)
     return jsonify(status="ok")
 
+@app.route('/emotion_student',methods=['POST'])
+def emotion_student():
+    db= Db()
+    ex_id=request.form['ex_id']
+    s_id=request.form['lid']
+    file = request.files["pic"]
+    file.save(static_path + "a.jpg")
+    path = "/static/" + file.filename
+
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.layers import Dense, Dropout, Flatten
+    from tensorflow.keras.layers import Conv2D
+    from tensorflow.keras.optimizers import Adam
+    from tensorflow.keras.layers import MaxPooling2D
+    from tensorflow.keras.preprocessing.image import ImageDataGenerator
+    import os
+
+    import cv2
+
+    frame=cv2.imread(static_path + "a.jpg")
+
+    model = Sequential()
+
+    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(48,48,1)))
+    model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(Flatten())
+    model.add(Dense(1024, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(7, activation='softmax'))
+
+    model.load_weights(r'C:\Users\user\Desktop\project\Kids Learning\model.h5')
+
+    # prevents openCL usage and unnecessary logging messages
+    cv2.ocl.setUseOpenCL(False)
+
+    # dictionary which assigns each label an emotion (alphabetical order)
+    emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
+
+    # start the webcam feed
+    facecasc = cv2.CascadeClassifier(r'C:\Users\user\Desktop\project\Kids Learning\haarcascade_frontalface_default.xml')
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = facecasc.detectMultiScale(gray,scaleFactor=1.3, minNeighbors=5)
+
+    for (x, y, w, h) in faces:
+        cv2.rectangle(frame, (x, y-50), (x+w, y+h+10), (255, 0, 0), 2)
+        roi_gray = gray[y:y + h, x:x + w]
+        cropped_img = np.expand_dims(np.expand_dims(cv2.resize(roi_gray, (48, 48)), -1), 0)
+        prediction = model.predict(cropped_img)
+        # print(prediction)
+    maxindex = int(np.argmax(prediction))
+    print(emotion_dict[maxindex])
+    qry="INSERT INTO `emotions`  (`s_id`,`emotion`,`date`,`time`,`ex_id`) VALUES ('"+s_id+"','"+emotion_dict[maxindex]+"',curdate(),curtime(),'"+ex_id+"')"
+    res= db.insert(qry)
+    print(qry)    
+    return jsonify(status="ok" )
+
+@app.route('/Viewemotion/<id>')
+def ViewEmotion(id):
+    db=Db()
+    qry="SELECT emotions.`emotion`,exam.subject,COUNT(*)AS 'cnt' FROM `exam` INNER JOIN `emotions` ON exam.ex_id=emotions.ex_id WHERE s_id='"+id+"' GROUP BY emotion,exam.subject"
+    print(qry)
+    res= db.select(qry)
+    return render_template('Parent/Viewemotion.html',data=res)
+
+@app.route('/viewreult_exam/<id>')
+def viewreult_exam(id):
+    db=Db()
+    qry="SELECT exam.* ,exam_result.result FROM  exam INNER JOIN exam_result ON exam.ex_id=exam_result.ex_id WHERE s_id="+id+""
+    res= db.select(qry)
+    return render_template('Parent/examresult.html',data=res)
 
 
 
+@app.route ('/savedrawing_student',methods=['POST'])
+def saveimage():
+    db= Db()
+
+    s_id=request.form['lid']
+    file=request.form['image']
+    import time,datetime
+    from encodings.base64_codec import base64_decode
+    import base64
+
+
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    print(timestr)
+    a = base64.b64decode(file)
+    fh = open("static/drawing/" + timestr + ".jpg", "wb")
+    path = "/static/drawing/" + timestr + ".jpg"
+    fh.write(a)
+    fh.close()  
+    
+    qry="INSERT INTO `drawing` (s_id,DATE,FILE)VALUES('"+s_id+"',CURDATE(),'"+path+"')"
+    res=db.insert(qry)
+    return jsonify(status="ok")
+
+
+@app.route('/viewdrawings/<id>')
+def viewdrawings(id):
+    db=Db()
+    qry="SELECT * FROM `drawing` WHERE s_id='"+id+"'"
+    res= db.select(qry)
+    return render_template('Teacher/Viewdrawings.html',data=res)
+
+
+
+@app.route('/viewexam_resultt_student',methods=['post'])
+def viewexam_result():
+    db=Db()
+    s_id=request.form['lid']
+    qry="SELECT `subject`,`result`,`exam`.`date`,exam.ex_id FROM `exam` INNER JOIN `exam_result` ON `exam`.`ex_id`=`exam_result`.`ex_id` WHERE `s_id`='"+s_id+"'"
+    res= db.select(qry)
+    return jsonify(status="ok",users=res)
+
+@app.route('/viewexam_result_student' ,methods=['post'])
+def viewexam_result_student():
+    db=Db()
+    s_id=request.form['lid']
+    eid=request.form['ex_id']
+    qry="SELECT COUNT(*) AS tqus,`exam_result`.`result` FROM `exam_question` JOIN `exam_result` ON `exam_question`.`ex_id`=`exam_result`.`ex_id` WHERE `exam_result`.`ex_id`="+eid+" AND `exam_result`.`s_id`="+s_id+""
+    res= db.select(qry)
+    print(res)
+    return jsonify(status="ok",result=res)
+
+
+@app.route('/viewobject_student' ,methods=['post'])
+def viewobject_student():
+    db= Db()
+    qry="SELECT * FROM `objects`"
+    res= db.select(qry)
+    return jsonify(status="ok",data=res)
+
+
+
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True)
